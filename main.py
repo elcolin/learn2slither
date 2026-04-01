@@ -10,7 +10,6 @@ from q import *
 
 SUCCESS = True
 FAILURE = False
-MAP_SIZE = 10
 NUMBER_OF_ACTIONS = 4
 
 class GameState:
@@ -25,23 +24,20 @@ class GameState:
             Parameters: 
                 New snake head position.
         """
-        self.snake_.update_snake(new_head_coords)
         self.map_.update_snake_position(self.snake_)
-        self.map_.print_snakes_vision(self.snake_.head_)
+        # self.map_.print_snakes_vision(self.snake_.head_)
 
-    # def state_projection(self, action: int) -> tuple[int, int]:
-    #     coords = self.snake_.project_head(directions[action])
-    #     return coords
-    
-    def game_iteration(self, action: int) -> tuple[tuple[int, int], str]:
-        state : tuple[int, int] = self.snake_.project_head(directions[action])
-        item: str = self.map_.grid_[state]
-        self.update_game(state)
-        return state, item
+    def game_iteration(self, at: int) -> tuple[tuple[int, int], str]:
+        st = self.snake_.take_action(at)
+        item: str = self.map_.grid_[st]
+        print(item)
+        self.update_game(st)
+        return st, item
         
-DEPTH = 20
-
+DEPTH = 100
+TIMER_MS = 10
 class Simulation:
+
     def __init__(self, initial_game_state: GameState, display: DisplayGame):
         self.initial_game_state_ = initial_game_state
         self.display_ = display
@@ -50,24 +46,42 @@ class Simulation:
 
     def reset_simulation(self):
         game_state = copy.deepcopy(self.initial_game_state_)
-        self.display_.set_callback(lambda : self.simulate(game_state, 0))
+        self.display_.set_timer_callback(TIMER_MS, lambda : self.simulate(game_state, 0))
 
     def simulate(self, game_state: GameState, idx: int):
         self.display_.draw_grid(game_state.map_.grid_)
-        head = game_state.snake_.head_
-        head_current_idx = head[Y] * (MAP_SIZE - 1) + head[X]
-        action = self.q.generate_action(head_current_idx)
-        state, item = game_state.game_iteration(action)
-        r = self.q.evaluate_item(item)
-        q_idx = state[Y] * (MAP_SIZE - 1) + state[X]
-        self.q.q_table_[q_idx, action] += r 
-        # self.q.print()
-        if idx > DEPTH or self.q.r  < -2: 
+
+        init_coord = game_state.snake_.head_
+        init_st = self.q.get_row(init_coord)
+
+        at = self.q.generate_action(init_st)
+        # while (
+        #         game_state.snake_.project_head(directions[at])[X] < 0 or
+        #         game_state.snake_.project_head(directions[at])[X] >= MAP_SIZE or
+        #         game_state.snake_.project_head(directions[at])[Y] < 0 or
+        #         game_state.snake_.project_head(directions[at])[Y] >= MAP_SIZE
+        # ):
+        #     # print(at)
+        #     at = self.q.generate_action(init_st)
+        new_coord = game_state.snake_.project_head(directions[at])
+        item = game_state.map_.grid_[new_coord]
+        # new_coord, item = game_state.game_iteration(at)
+
+        new_st = self.q.get_row(new_coord)
+        new_q_value = self.q.q_table_[new_st, np.argmax(self.q.q_table_[new_st])]
+
+        r = self.q.evaluate_item(item, idx)
+        print(f"r: {r}")
+        self.q.q_table_[init_st, at] += (r + self.q.discount_factor_ * (new_q_value - self.q.q_table_[init_st, at]))
+        # print(f"{at} {new_st} {directions_names[at]} {directions_names[at]}")
+        if idx > DEPTH or item == 'W':
             self.reset_simulation()
             return
         idx += 1
+        game_state.game_iteration(at)
+        # self.q.print()
         self.display_.draw_grid(game_state.map_.grid_)
-        self.display_.set_callback(lambda : self.simulate(game_state, idx))
+        self.display_.set_timer_callback(TIMER_MS, lambda : self.simulate(game_state, idx))
 
 def main():
     parser = argparse.ArgumentParser(description="") 
@@ -78,7 +92,7 @@ def main():
 )
     args = parser.parse_args()
     signal.signal(signal.SIGINT, handle_ctrl_c)
-    game_state = GameState(Snake([(1,3), (1,4), (1,5)]), Map(10))
+    game_state = GameState(Snake([(1,1), (1,2), (1,3)]), Map(MAP_SIZE))
     display : DisplayGame = DisplayGame(args.display)
     simulation : Simulation = Simulation(game_state, display)
     display.root.mainloop()

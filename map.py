@@ -1,6 +1,6 @@
 from utils import *
 from snake import *
-
+import copy
 class Map:
     def __init__(self, size: int):
         self.map_size_ : int = size
@@ -8,9 +8,10 @@ class Map:
         self.green_apples_coords_ : list[tuple[int]] = []
         self.red_apples_coords_ : list[tuple[int]] = []
         self.generate_mandatory_walls()
-        self.generate_random_int_walls(10)
-        self.generate_green_apples(3)
-        self.generate_red_apples(3)
+        self.generate_random_int_walls(MAP_SIZE)
+        self.copy_grid_ = copy.deepcopy(self.grid_)
+        self.generate_green_apples(int(MAP_SIZE / 0.75))
+        self.generate_red_apples(int(MAP_SIZE / 0.75))
 
     def is_empty_space(self, coord: tuple[int]) -> bool:
         if (self.grid_[coord] == EMPTY):
@@ -35,10 +36,11 @@ class Map:
         
     def update_snake_position(self, snake: Snake) :
         if snake.tampered_coords_ is not None:
-            self.grid_[snake.tampered_coords_] = EMPTY
-        self.grid_[snake.head_] = SNAKE_HEAD
-        for coord in snake.snake_body_:
+            self.grid_[snake.tampered_coords_] = self.copy_grid_[snake.tampered_coords_]
+        for coord in snake.body_:
             self.grid_[coord] = SNAKE_BODY
+            
+        self.grid_[snake.head_] = SNAKE_HEAD
                 
     def generate_coords(self) -> tuple[int]:
         return (generate_random_int(1, self.map_size_ - 2), generate_random_int(1, self.map_size_ - 2))

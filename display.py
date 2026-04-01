@@ -1,6 +1,7 @@
 import tkinter as tk
 import numpy as np
 from typing import Optional
+from utils import *
 CELL_SIZE = 40  # taille de chaque cellule en pixels
 
 colors = {
@@ -9,7 +10,8 @@ colors = {
     'H': 'darkgreen', # tête serpent
     'S': 'green',     # corps serpent
     'G': 'lightgreen',# pomme verte
-    'R': 'red'        # pomme rouge
+    'R': 'red'        ,# pomme rouge
+    'Y': 'yellow'
 }
 
 class DisplayGame:
@@ -21,10 +23,18 @@ class DisplayGame:
             self.root.withdraw()
             return
         self.root.title("Snake")
-        self.root.geometry("400x400")  # optionnel : taille en pixels
-        self.canvas = tk.Canvas(self.root, width=400, height=400)
+        width = MAP_SIZE * 40
+        self.root.geometry(f"{width}x{width}")  # optionnel : taille en pixels
+        self.canvas = tk.Canvas(self.root, width=MAP_SIZE * 40, height=MAP_SIZE * 40)
         self.canvas.pack()
 
+    def draw_rectangle(self, coords: tuple[int, int], color: str):
+         
+        if (self.canvas is None):
+            return
+        x1, y1 = coords[X] * CELL_SIZE, coords[Y] * CELL_SIZE
+        x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
+        self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
     def draw_grid(self, grid: np.array):
         if (not self.display_activated_):
             return
