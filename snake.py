@@ -14,13 +14,14 @@ class Snake :
     def take_action(self, action: tuple[int]) -> tuple[int, int]:
         # self.update_snake(self.project_head(direction))
         new_head_coords = self.project_head(directions[action])
-        print(self.head_)
-        print(new_head_coords)
         self.head_to_tail(self.head_)
         self.define_new_head_coords(new_head_coords)
-        self.delete_tail()
         return new_head_coords
 
+    def add_tail(self):
+        self.body_.append(self.tampered_coords_)
+        self.snake_coords_.append(self.tampered_coords_)
+        self.tampered_coords_ = []
     def head_to_tail(self, old_head_coords: tuple[int, int]):
         self.body_.insert(0, old_head_coords)
 

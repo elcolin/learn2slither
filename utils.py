@@ -9,8 +9,9 @@ GREEN_APPLE = 'G'
 RED_APPLE = 'R'
 EMPTY = '0'
 
-MAP_SIZE = 15
-
+MAP_SIZE = 10
+NUMBER_OF_GREEN_APPLE = 2
+NUMBER_OF_RED_APPLE = 1
 
 UP : tuple[int, int] = (-1, 0)
 DOWN : tuple[int, int] = (1, 0)

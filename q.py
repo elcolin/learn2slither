@@ -3,8 +3,8 @@ from utils import *
 
 
 class Q :
-    def __init__(self, number_of_states: int, number_of_actions: int):
-        self.learning_rate_: np.float64 = 0.1
+    def __init__(self, number_of_states: int, number_of_actions: int, learning_rate : np.float64):
+        self.learning_rate_: np.float64 = learning_rate
         self.discount_factor_: np.float64 = 0.9 #gamma
         self.number_of_states_ = number_of_states
         self.number_of_actions_ = number_of_actions
@@ -19,20 +19,21 @@ class Q :
     def generate_action(self, st: int) -> int:
         if (random.uniform(0, 1) < self.eps):
             randomint = generate_random_int(0, 3)
-            print(randomint)
             return randomint
         argmax = np.argmax(self.q_table_[st])
-        print(f"argmax: {argmax} , {self.q_table_[st]}")
         return argmax
-    
 
+    def update(self, r: np.float64, st: int, at: int, st1: int):
+        max_q_value_st1 = np.max(self.q_table_[st1])
+        q_value_at_st = self.q_table_[st, at]
+        self.q_table_[st, at] = (1 - self.learning_rate_) * q_value_at_st  + self.learning_rate_ * (r + self.discount_factor_ * max_q_value_st1)
 
     def evaluate_item(self, item: str, t: int) -> np.float64:
         v = str(item)
         r : int = 0
         match v:
-            case 'W': r = -10
-            case '0': r = -0.01
+            case 'W': r = -1
+            case '0': r = -0.2
             case 'R': r = -1
             case 'S': r = -10
             case 'G': r = 1
