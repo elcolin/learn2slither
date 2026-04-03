@@ -36,7 +36,7 @@ class GameState:
             self.snake_.delete_tail()
         self.update_game(new_head_coords)
         
-TIMER_MS = 10
+TIMER_MS = 1
 LEARNING_RATE = 0.1
 class Simulation:
 
@@ -50,7 +50,6 @@ class Simulation:
         self.destination_file_ : str = args.dst
         if (args.src is not None):
             self.q.q_table_ = np.load(args.src, allow_pickle=True).item()
-            print(self.q.q_table_)
             print("Q Table loaded!")
         self.timer_ms_ = TIMER_MS
         if (args.timer is not None):
@@ -78,7 +77,7 @@ class Simulation:
         print()
         if (st not in self.q.q_table_):
             self.q.create_state(st)
-            at = self.q.generate_action(st, 0)
+            at = self.q.generate_action(st, 1)
         else:
             at = self.q.generate_action(st, 0)
         new_coord = game_state.snake_.project_head(directions[at])
