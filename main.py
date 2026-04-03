@@ -71,9 +71,12 @@ class Simulation:
         self.display_.draw_grid(game_state.map_.grid_)
 
         init_coord = game_state.snake_.head_
-        init_st = self.q.get_row(init_coord)
+        # init_st = self.q.get_row(init_coord)
 
-        at = self.q.generate_action(init_st)
+        key = game_state.map_.return_key_vision(init_coord)
+        if (key not in self.q.q_table_):
+            self.q.create_state(key)
+        at = self.q.generate_action(key, 0)
         new_coord = game_state.snake_.project_head(directions[at])
         item = game_state.map_.grid_[new_coord]
 

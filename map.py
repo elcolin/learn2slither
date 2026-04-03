@@ -20,6 +20,14 @@ class Map:
     def return_item(self, coords: tuple[int, int]) -> str:
         return self.grid_[coords]
     
+    def return_key_vision(self, head_coords: tuple[int, int]) -> str:
+        key: str = []
+        key += self.grid_[head_coords[Y] + UP[Y], head_coords[X] + UP[X]]
+        key += self.grid_[head_coords[Y] + DOWN[Y], head_coords[X] + DOWN[X]]
+        key += self.grid_[head_coords[Y] + RIGHT[Y], head_coords[X] + RIGHT[X]]
+        key += self.grid_[head_coords[Y] + LEFT[Y], head_coords[X] + LEFT[X]]
+        return key
+    
     def print_snakes_vision(self, head_coords: tuple[int, int]):
         for y in range(self.grid_.shape[Y]) :
             if y == head_coords[Y]:

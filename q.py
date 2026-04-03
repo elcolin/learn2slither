@@ -9,15 +9,18 @@ class Q :
         self.number_of_states_ = number_of_states
         self.number_of_actions_ = number_of_actions
         self.r : np.float64 = 0
-        self.eps : np.float64  = 0.1
-        self.q_table_ = np.zeros((number_of_states, number_of_actions))
+        # self.eps : np.float64  = 0.1
+        self.q_table_['0000'] = {[0.0, 0.0, 0.0, 0.0]}
 
+    def create_state(self, key):
+        if (key not in self.q_table_):
+            self.q_table_[key] = {[0.0, 0.0, 0.0, 0.0]}
     def get_row(self, coord: tuple[int, int]) -> int:
         row : int = coord[Y] * (MAP_SIZE - 1) + coord[X]
         return row
 
-    def generate_action(self, st: int) -> int:
-        if (random.uniform(0, 1) < self.eps):
+    def generate_action(self, st: int, eps: np.float64) -> int:
+        if (random.uniform(0, 1) < eps):
             randomint = generate_random_int(0, 3)
             return randomint
         argmax = np.argmax(self.q_table_[st])
