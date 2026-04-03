@@ -49,7 +49,8 @@ class Simulation:
             self.q = Q(MAP_SIZE * MAP_SIZE, NUMBER_OF_ACTIONS, 0)
         self.destination_file_ : str = args.dst
         if (args.src is not None):
-            self.q.q_table_ = np.load(args.src)
+            self.q.q_table_ = np.load(args.src, allow_pickle=True).item()
+            print(self.q.q_table_)
             print("Q Table loaded!")
         self.timer_ms_ = TIMER_MS
         if (args.timer is not None):
@@ -62,9 +63,9 @@ class Simulation:
 
     def reset_simulation(self):
         game_state = copy.deepcopy(self.initial_game_state_)
-        self.display_.set_timer_callback(self.timer_ms_, lambda : self.simulate(game_state, 0))
+        self.display_.set_timer_callback(self.timer_ms_, lambda : self.simulate(game_state))
 
-    def simulate(self, game_state: GameState, idx: int):
+    def simulate(self, game_state: GameState):
         if (self.sessions_ != -1 and self.sessions_idx_ >= self.sessions_ ):
             self.save_model()
         self.sessions_idx_ += 1
@@ -73,24 +74,28 @@ class Simulation:
         init_coord = game_state.snake_.head_
         # init_st = self.q.get_row(init_coord)
 
-        key = game_state.map_.return_key_vision(init_coord)
-        if (key not in self.q.q_table_):
-            self.q.create_state(key)
-        at = self.q.generate_action(key, 0)
+        st = game_state.map_.return_key_vision(init_coord)
+        print()
+        if (st not in self.q.q_table_):
+            self.q.create_state(st)
+            at = self.q.generate_action(st, 0)
+        else:
+            at = self.q.generate_action(st, 0)
         new_coord = game_state.snake_.project_head(directions[at])
         item = game_state.map_.grid_[new_coord]
+        game_state.game_iteration(at, item)
 
-        new_st = self.q.get_row(new_coord)
-
-        r = self.q.evaluate_item(item, idx)
-        self.q.update(r, init_st, at, new_st)
+        new_st = game_state.map_.return_key_vision(new_coord)
+        if (new_st not in self.q.q_table_):
+            self.q.create_state(new_st)
+        r = self.q.evaluate_item(item)
+        print(self.q.q_table_[new_st])
+        self.q.update(r, st, at, new_st)
         if item == 'W' or item == 'S':
             self.reset_simulation()
             return
-        idx += 1
-        game_state.game_iteration(at, item)
         self.display_.draw_grid(game_state.map_.grid_)
-        self.display_.set_timer_callback(self.timer_ms_, lambda : self.simulate(game_state, idx))
+        self.display_.set_timer_callback(self.timer_ms_, lambda : self.simulate(game_state))
 
     def ctrl_c_save_model(self, signum, frame):
         self.save_model()
@@ -131,6 +136,11 @@ def main():
     parser.add_argument(
         "--learn",
         action="store_true"
+    )
+
+    parser.add_argument(
+        "--no-random",
+        action="store_false"
     )
 
 

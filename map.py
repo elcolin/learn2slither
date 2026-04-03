@@ -20,12 +20,44 @@ class Map:
     def return_item(self, coords: tuple[int, int]) -> str:
         return self.grid_[coords]
     
-    def return_key_vision(self, head_coords: tuple[int, int]) -> str:
+    def project_coord(self, head_coords:tuple[int, int], add_coords: tuple[int, int]):
+        new_y = head_coords[Y] + add_coords[Y]
+        new_x = head_coords[X] + add_coords[X]
+        
+        # limiter dans la grille
+        new_y = max(0, min(new_y, len(self.grid_) - 1))
+        new_x = max(0, min(new_x, len(self.grid_[0]) - 1))
+        return (new_y, new_x)
+
+    def get_snakes_vision(self, head_coords: tuple[int, int]):
         key: str = []
-        key += self.grid_[head_coords[Y] + UP[Y], head_coords[X] + UP[X]]
-        key += self.grid_[head_coords[Y] + DOWN[Y], head_coords[X] + DOWN[X]]
-        key += self.grid_[head_coords[Y] + RIGHT[Y], head_coords[X] + RIGHT[X]]
-        key += self.grid_[head_coords[Y] + LEFT[Y], head_coords[X] + LEFT[X]]
+        for y in range(self.grid_.shape[Y]) :
+            if y == head_coords[Y]:
+                for char in self.grid_[y]:
+                    key += str(self.grid_[y])
+                continue
+            for x in range(self.grid_.shape[1]):
+                if x == head_coords[X]:
+                    key += str(self.grid_[y][x])
+                    continue
+        return key
+    def return_key_vision(self, head_coords: tuple[int, int]) -> str:
+        key: str = self.get_snakes_vision(head_coords)
+        self.print_snakes_vision(head_coords)
+        # for direction in directions:
+        # 
+            # coords = self.project_coord(head_coords, direction)
+            # if (self.grid_[coords] == SNAKE_HEAD):
+                # key += EMPTY
+                # continue
+            # key += self.grid_[self.project_coord(head_coords, direction)]
+        # key += self.grid_[self.project_coord(head_coords, RIGHT)]
+        # key += self.grid_[self.project_coord(head_coords, LEFT)]
+
+        # key += self.grid_[head_coords[Y] + DOWN[Y], head_coords[X] + DOWN[X]]
+        # key += self.grid_[head_coords[Y] + RIGHT[Y], head_coords[X] + RIGHT[X]]
+        # key += self.grid_[head_coords[Y] + LEFT[Y], head_coords[X] + LEFT[X]]
+        key = tuple(key)
         return key
     
     def print_snakes_vision(self, head_coords: tuple[int, int]):
