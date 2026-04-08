@@ -44,7 +44,7 @@ class Map:
         key: str = []
         for _ in range(depth):
             for direction in directions:
-                coords = self.project_coord(head_coords, direction)
+                coords = self.project_coord(head_coords, direction, depth)
                 key += self.grid_[coords]
         return tuple(key)
     
