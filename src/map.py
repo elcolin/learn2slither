@@ -33,8 +33,7 @@ class Map:
         key: str = []
         for y in range(self.grid_.shape[Y]) :
             if y == head_coords[Y]:
-                for char in self.grid_[y]:
-                    key += str(self.grid_[y])
+                key += str(self.grid_[y])
                 continue
             for x in range(self.grid_.shape[1]):
                 if x == head_coords[X]:
@@ -48,24 +47,6 @@ class Map:
                 coords = self.project_coord(head_coords, direction)
                 key += self.grid_[coords]
         return tuple(key)
-    def return_key_vision(self, head_coords: tuple[int, int]) -> str:
-        # key: str = self.get_snakes_vision(head_coords)
-        self.print_snakes_vision(head_coords)
-        # for direction in directions:
-        # 
-            # coords = self.project_coord(head_coords, direction)
-            # if (self.grid_[coords] == SNAKE_HEAD):
-                # key += EMPTY
-                # continue
-            # key += self.grid_[self.project_coord(head_coords, direction)]
-        # key += self.grid_[self.project_coord(head_coords, RIGHT)]
-        # key += self.grid_[self.project_coord(head_coords, LEFT)]
-
-        # key += self.grid_[head_coords[Y] + DOWN[Y], head_coords[X] + DOWN[X]]
-        # key += self.grid_[head_coords[Y] + RIGHT[Y], head_coords[X] + RIGHT[X]]
-        # key += self.grid_[head_coords[Y] + LEFT[Y], head_coords[X] + LEFT[X]]
-        # key = tuple(key)
-        return self.get_snake_surroundings(head_coords, 3)
     
     def print_snakes_vision(self, head_coords: tuple[int, int]):
         for y in range(self.grid_.shape[Y]) :
@@ -80,6 +61,7 @@ class Map:
                     continue
                 print(' ', end='')
             print()
+        print()
         
     def update_snake_position(self, snake: Snake) :
         if snake.tampered_coords_ is not None:

@@ -1,5 +1,7 @@
 from utils import *
 
+SNAKE_IS_DEAD = 0
+SNAKE_IS_ALIVE = 1
 class Snake :
     def __init__(self, snake_coords: list[tuple]):
         self.snake_coords_ : list[tuple] = []
@@ -26,11 +28,12 @@ class Snake :
         self.body_.insert(0, old_head_coords)
 
     def delete_tail(self):
-        if not self.snake_coords_:
-            return
+        if not self.body_:
+            return SNAKE_IS_DEAD
         self.tampered_coords_ = self.body_[-1]
         self.snake_coords_.pop()
         self.body_.pop()
+        return SNAKE_IS_ALIVE
 
     def define_new_head_coords(self, head_coords: tuple[int]):
         # print(head_coords)

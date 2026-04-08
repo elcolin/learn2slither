@@ -1,41 +1,33 @@
 import numpy as np
 from utils import *
+import copy
 
-
+LEARNING_RATE = 0.1
 class Q :
-    def __init__(self, number_of_states: int, number_of_actions: int, learning_rate : np.float64):
+    def __init__(self, learning_rate : np.float64):
         self.learning_rate_: np.float64 = learning_rate
         self.discount_factor_: np.float64 = 0.9 #gamma
-        self.number_of_states_ = number_of_states
-        self.number_of_actions_ = number_of_actions
         self.r : np.float64 = 0
         # self.eps : np.float64  = 0.1
         self.q_table_ = {}
         # self.q_table_['0000'] = [[0.0, 0.0, 0.0, 0.0]]
 
+    def load_q_table(self, q_table: dict):
+        self.q_table = q_table
     def create_state(self, key):
         if (key not in self.q_table_):
             self.q_table_[key] = [0.0, 0.0, 0.0, 0.0]
-    def get_row(self, coord: tuple[int, int]) -> int:
-        row : int = coord[Y] * (MAP_SIZE - 1) + coord[X]
-        return row
-
     def generate_action(self, st, eps: np.float64) -> int:
         if (random.uniform(0, 1) < eps):
             randomint = generate_random_int(0, 3)
             return randomint
         argmax = np.argmax(self.q_table_[st])
-        print("argmax")
         return argmax
 
     def update(self, r: np.float64, st, at: int, st1):
-        # print(f"{r} {st} {at} {st1}")
-        # print(f"{st} {self.q_table_[st]}")
-        # print(f"{st1} {self.q_table_[st1]}")
         max_q_value_st1 = np.max(self.q_table_[st1])
         q_value_at_st = self.q_table_[st][at]
         self.q_table_[st][at] = (1 - self.learning_rate_) * q_value_at_st  + self.learning_rate_ * (r + self.discount_factor_ * max_q_value_st1)
-        print(self.q_table_[st][at])
 
     def evaluate_item(self, item: str) -> np.float64:
         v = str(item)
