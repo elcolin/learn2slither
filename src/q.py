@@ -19,7 +19,7 @@ class Q :
             self.q_table_[key] = [0.0, 0.0, 0.0, 0.0]
     def generate_action(self, st, eps: np.float64) -> int:
         if (random.uniform(0, 1) < eps):
-            randomint = generate_random_int(0, 3)
+            randomint = random.randint(0, 3)
             return randomint
         argmax = np.argmax(self.q_table_[st])
         return argmax

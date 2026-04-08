@@ -1,5 +1,5 @@
 from utils import *
-from snake import *
+from snake import Snake
 import copy
 class Map:
     def __init__(self, size: int):
@@ -48,6 +48,11 @@ class Map:
                 key += self.grid_[coords]
         return tuple(key)
     
+    # def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1):
+    #     for _ in range(depth):
+    #         coords = self.project_coord(head_coords, direction)
+    #         key += self.grid_[coords]
+
     def print_snakes_vision(self, head_coords: tuple[int, int]):
         for y in range(self.grid_.shape[Y]) :
             if y == head_coords[Y]:
@@ -75,7 +80,7 @@ class Map:
         self.grid_[snake.head_] = SNAKE_HEAD
                 
     def generate_coords(self) -> tuple[int]:
-        return (generate_random_int(1, self.map_size_ - 2), generate_random_int(1, self.map_size_ - 2))
+        return (random.randint(1, self.map_size_ - 2), random.randint(1, self.map_size_ - 2))
 
     def generate_valid_coords(self) -> tuple[int]:
         coords: tuple[int] = (0, 0)

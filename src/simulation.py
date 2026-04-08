@@ -42,6 +42,7 @@ class Simulation:
         item = game_state.map_.grid_[new_coord]
         game_state.game_iteration(at, item)
         new_st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
+        # for direction in directions:
         if (new_st not in self.q.q_table_):
             self.q.create_state(new_st)
         r = self.q.evaluate_item(item)

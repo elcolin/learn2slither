@@ -26,9 +26,3 @@ directions_names = ["UP", "DOWN", "LEFT", "RIGHT"]
 # COORDS
 X = 1
 Y = 0
-
-def generate_random_int(min: int, max: int) -> int:
-    return random.randint(min, max)
-
-def handle_ctrl_c(signum, frame):
-    sys.exit(0)
