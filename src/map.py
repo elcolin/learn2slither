@@ -42,16 +42,18 @@ class Map:
         return key
     def get_snake_surroundings(self, head_coords: tuple[int, int], depth : int = 1) -> tuple:
         key: str = []
-        for _ in range(depth):
+        for i in range(1, depth):
             for direction in directions:
-                coords = self.project_coord(head_coords, direction, depth)
+                coords = self.project_coord(head_coords, direction, i)
                 key += self.grid_[coords]
         return tuple(key)
     
-    # def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1):
-    #     for _ in range(depth):
-    #         coords = self.project_coord(head_coords, direction)
-    #         key += self.grid_[coords]
+    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1):
+        key: str = []
+        for i in range(depth):
+            coords = self.project_coord(head_coords, direction, i)
+            key += self.grid_[coords]
+        return tuple(key)
 
     def print_snakes_vision(self, head_coords: tuple[int, int]):
         for y in range(self.grid_.shape[Y]) :

@@ -17,10 +17,13 @@ class Q :
     def create_state(self, key):
         if (key not in self.q_table_):
             self.q_table_[key] = [0.0, 0.0, 0.0, 0.0]
+    def get_qt_max(self, st):
+        return np.max(self.q_table_[st])
     def generate_action(self, st, eps: np.float64) -> int:
         if (random.uniform(0, 1) < eps):
             randomint = random.randint(0, 3)
             return randomint
+        print(self.q_table_[st])
         argmax = np.argmax(self.q_table_[st])
         return argmax
 

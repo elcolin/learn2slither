@@ -32,21 +32,44 @@ class Simulation:
         self.sessions_idx_ += 1
         self.display_.draw_grid(game_state.map_.grid_)
 
-        st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
-        if (st not in self.q.q_table_):
-            self.q.create_state(st)
-            at = self.q.generate_action(st, 1)
-        else:
-            at = self.q.generate_action(st, 0.1)
-        new_coord = game_state.snake_.project_head(directions[at])
+        # st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
+        st = []
+        at = []
+        qt = []
+        for i in range(len(directions)):
+            st.append(game_state.map_.get_direction(game_state.snake_.head_, directions[i], self.param.depth_))
+            if (st[i] not in self.q.q_table_):
+                self.q.create_state(st[i])
+                at.append(self.q.generate_action(st[i], 1))
+                qt.append(self.q.get_qt_max(st[i]))
+            else:
+                at.append(self.q.generate_action(st[i], 0.1))
+                qt.append(self.q.get_qt_max(st[i]))
+        print(st)
+        print(at)
+        print(qt)
+        i = np.argmax(qt)
+        # if (st not in self.q.q_table_):
+        #     self.q.create_state(st)
+        #     at = self.q.generate_action(st, 1)
+        # else:
+        #     at = self.q.generate_action(st, 0.1)
+        new_coord = game_state.snake_.project_head(directions[at[i]])
         item = game_state.map_.grid_[new_coord]
-        game_state.game_iteration(at, item)
-        new_st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
-        # for direction in directions:
-        if (new_st not in self.q.q_table_):
-            self.q.create_state(new_st)
+        game_state.game_iteration(at[i], item)
+        # new_st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
+        new_st = []
+        new_qt = []
+        for k in range(len(directions)):
+            new_st.append(game_state.map_.get_direction(game_state.snake_.head_, directions[k], self.param.depth_))
+            if (new_st[k] not in self.q.q_table_):
+                self.q.create_state(new_st[k])
+                new_qt.append(self.q.get_qt_max(st[k]))
+            else:
+                new_qt.append(self.q.get_qt_max(new_st[k]))
+        j = np.argmax(new_qt)
         r = self.q.evaluate_item(item)
-        self.q.update(r, st, at, new_st)
+        self.q.update(r, st[i], at[i], new_st[j])
         if not game_state.is_snake_alive():
             self.reset_simulation()
             return
@@ -55,6 +78,7 @@ class Simulation:
 
     def ctrl_c_save_model(self, signum, frame):
         self.save_model()
+        
     def save_model(self):
         if self.param.destination_file_ is None:
             sys.exit(0)
