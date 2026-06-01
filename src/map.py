@@ -61,20 +61,20 @@ class Map:
                 return tuple(key)
         return tuple(key)
 
-#    def print_snakes_vision(self, head_coords: tuple[int, int]):
-#        for y in range(self.grid_.shape[Y]) :
-#            if y == head_coords[Y]:
-#                for char in self.grid_[y]:
-#                    #print(char, end='')
-#                #print()
-#                continue
-#            for x in range(self.grid_.shape[1]):
-#                if x == head_coords[X]:
-#                    #print(self.grid_[y][x], end='')
-#                    continue
-#                #print(' ', end='')
-#            #print()
-#        #print()
+    def print_snakes_vision(self, head_coords: tuple[int, int]):
+        for y in range(self.grid_.shape[Y]):
+            if y == head_coords[Y]:
+                for char in self.grid_[y]:
+                   print(char, end='')
+                print()
+                continue
+            for x in range(self.grid_.shape[1]):
+               if x == head_coords[X]:
+                   print(self.grid_[y][x], end='')
+                   continue
+               print(' ', end='')
+            print()
+        print()
         
     def update_snake_position(self, snake: Snake) :
         if snake.tampered_coords_ is not None:
