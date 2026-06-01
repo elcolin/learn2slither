@@ -62,6 +62,8 @@ class Simulation:
 
     def reset_simulation(self):
         game_state = copy.deepcopy(self.initial_game_state_)
+        game_state.map_.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
+        game_state.map_.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
         self.display_.set_timer_callback(self.timer_ms_, lambda : self.simulate(game_state))
 
     def simulate(self, game_state: GameState):
@@ -109,9 +111,9 @@ class Simulation:
 def main():
     parser = argparse.ArgumentParser(description="") 
     parser.add_argument(
-    "--display",   # nom de l'argument
-    action="store_true",  # si présent, devient True
-    help="Activer l'affichage"
+    "--no_display",
+    action="store_false", 
+    help="Desactiver l'affichage"
     )
     parser.add_argument(
     "--src",
@@ -134,7 +136,7 @@ def main():
 
     parser.add_argument(
         "--learn",
-        action="store_true"
+        action="store_false"
     )
 
     parser.add_argument(
@@ -145,7 +147,7 @@ def main():
 
     args = parser.parse_args()
     game_state = GameState(Snake([(1,1), (1,2), (1,3)]), Map(MAP_SIZE))
-    display : DisplayGame = DisplayGame(args.display)
+    display : DisplayGame = DisplayGame(args.no_display)
     simulation : Simulation = Simulation(game_state, display, args)
     signal.signal(signal.SIGINT, simulation.ctrl_c_save_model)
     display.root.mainloop()
