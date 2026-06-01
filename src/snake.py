@@ -15,7 +15,9 @@ class Snake :
     
     def take_action(self, action: tuple[int]) -> tuple[int, int]:
         # self.update_snake(self.project_head(direction))
+        # print(directions[action])
         new_head_coords = self.project_head(directions[action])
+        # print(new_head_coords)
         self.head_to_tail(self.head_)
         self.define_new_head_coords(new_head_coords)
         return new_head_coords
@@ -24,21 +26,24 @@ class Snake :
         self.body_.append(self.tampered_coords_)
         self.snake_coords_.append(self.tampered_coords_)
         self.tampered_coords_ = []
+
     def head_to_tail(self, old_head_coords: tuple[int, int]):
         self.body_.insert(0, old_head_coords)
 
     def delete_tail(self):
-        if not self.body_:
-            return SNAKE_IS_DEAD
-        self.tampered_coords_ = self.body_[-1]
+        if self.body_:
+            self.tampered_coords_ = self.body_[-1]
+            self.body_.pop()
         self.snake_coords_.pop()
-        self.body_.pop()
+        if not self.snake_coords_:
+            return SNAKE_IS_DEAD
         return SNAKE_IS_ALIVE
 
     def define_new_head_coords(self, head_coords: tuple[int]):
-        # print(head_coords)
+        print(head_coords)
         self.snake_coords_.insert(0, head_coords)
         self.head_ = head_coords
+
         
     # def move_snake(self, head_coords: tuple[int]):
         # if self.snake_coords_ :

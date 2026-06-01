@@ -28,6 +28,9 @@ class DisplayGame:
         self.canvas = tk.Canvas(self.root, width=MAP_SIZE * 40, height=MAP_SIZE * 40)
         self.canvas.pack()
 
+        # self.status_label = tk.Label(self.root, font=("Arial", 12), fg="gray")
+        # self.status_label.pack(side="bottom", fill="x")
+
     def draw_rectangle(self, coords: tuple[int, int], color: str):
          
         if (self.canvas is None):
@@ -35,6 +38,7 @@ class DisplayGame:
         x1, y1 = coords[X] * CELL_SIZE, coords[Y] * CELL_SIZE
         x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
         self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
+
     def draw_grid(self, grid: np.array):
         if (not self.display_activated_):
             return
@@ -47,8 +51,22 @@ class DisplayGame:
                 color = colors.get(cell_value, "white")
                 if (self.canvas):
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
+    def update_snake(self, length: int):
+        self.score_text = self.canvas.create_text(
+            10, 10,
+            anchor="nw",
+            text="Snake length: 3",
+            fill="blue",
+            font=("Arial", 16, "bold")
+        )
+        self.canvas.itemconfig(
+        self.score_text,
+        text=f"Snake length: {length}"
+        )
+
     def set_timer_callback(self, time , func):
             self.root.after(time, func)
+
     def set_callback(self, func):
         if (self.display_activated_):
             self.root.after(100, func)

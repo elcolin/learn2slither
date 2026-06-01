@@ -1,6 +1,8 @@
 from utils import *
 from snake import Snake
+from typing import Optional
 import copy
+
 class Map:
     def __init__(self, size: int):
         self.map_size_ : int = size
@@ -21,12 +23,14 @@ class Map:
         return self.grid_[coords]
     
     def project_coord(self, head_coords:tuple[int, int], add_coords: tuple[int, int], depth: int = 1):
+        
         new_y = head_coords[Y] + (add_coords[Y] * depth)
         new_x = head_coords[X] + (add_coords[X] * depth)
         
-        # limiter dans la grille
+
         new_y = max(0, min(new_y, len(self.grid_) - 1))
         new_x = max(0, min(new_x, len(self.grid_[0]) - 1))
+
         return (new_y, new_x)
 
     def get_snakes_vision(self, head_coords: tuple[int, int]):
@@ -48,38 +52,45 @@ class Map:
                 key += self.grid_[coords]
         return tuple(key)
     
-    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1):
+    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1) -> Optional[tuple]:
         key: str = []
-        for i in range(depth):
+        for i in range(1, depth + 1):
             coords = self.project_coord(head_coords, direction, i)
             key += self.grid_[coords]
+            if self.grid_[coords] == 'S' or self.grid_[coords] == 'W':
+                return tuple(key)
         return tuple(key)
 
-    def print_snakes_vision(self, head_coords: tuple[int, int]):
-        for y in range(self.grid_.shape[Y]) :
-            if y == head_coords[Y]:
-                for char in self.grid_[y]:
-                    print(char, end='')
-                print()
-                continue
-            for x in range(self.grid_.shape[1]):
-                if x == head_coords[X]:
-                    print(self.grid_[y][x], end='')
-                    continue
-                print(' ', end='')
-            print()
-        print()
+#    def print_snakes_vision(self, head_coords: tuple[int, int]):
+#        for y in range(self.grid_.shape[Y]) :
+#            if y == head_coords[Y]:
+#                for char in self.grid_[y]:
+#                    #print(char, end='')
+#                #print()
+#                continue
+#            for x in range(self.grid_.shape[1]):
+#                if x == head_coords[X]:
+#                    #print(self.grid_[y][x], end='')
+#                    continue
+#                #print(' ', end='')
+#            #print()
+#        #print()
         
     def update_snake_position(self, snake: Snake) :
         if snake.tampered_coords_ is not None:
             self.grid_[snake.tampered_coords_] = self.copy_grid_[snake.tampered_coords_]
         for coord in snake.body_:
+            # print(snake.body_)
             self.grid_[coord] = SNAKE_BODY
         if (self.grid_[snake.head_] == GREEN_APPLE):
             self.generate_apples(1, GREEN_APPLE)
         if (self.grid_[snake.head_] == RED_APPLE):
             self.generate_apples(1, RED_APPLE)
+
+        # print("last:", snake.head_)
         self.grid_[snake.head_] = SNAKE_HEAD
+        # print(snake.head_)
+
                 
     def generate_coords(self) -> tuple[int]:
         return (random.randint(1, self.map_size_ - 2), random.randint(1, self.map_size_ - 2))

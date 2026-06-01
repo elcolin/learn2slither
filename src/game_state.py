@@ -11,8 +11,6 @@ class GameState:
     def update_game(self):
         """
             Updates the state of the game
-            Parameters: 
-                New snake head position.
         """
         self.map_.update_snake_position(self.snake_)
     
