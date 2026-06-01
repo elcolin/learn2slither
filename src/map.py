@@ -10,8 +10,8 @@ class Map:
         self.generate_mandatory_walls()
         # self.generate_random_int_walls(MAP_SIZE)
         self.copy_grid_ = copy.deepcopy(self.grid_)
-        self.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
-        self.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
+        # self.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
+        # self.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
 
     def is_empty_space(self, coord: tuple[int]) -> bool:
         if (self.grid_[coord] == EMPTY):

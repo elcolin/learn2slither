@@ -9,9 +9,9 @@ class Parameters:
     def __init__(self):
         parser = argparse.ArgumentParser(description="") 
         parser.add_argument(
-        "--display",   # nom de l'argument
-        action="store_true",  # si présent, devient True
-        help="Activer l'affichage"
+        "--no_display",   # nom de l'argument
+        action="store_false",
+        help="Desactiver l'affichage"
         )
         parser.add_argument(
         "--src",
@@ -42,7 +42,7 @@ class Parameters:
             type=int)
         args = parser.parse_args()
         self.map_size_ = MAP_SIZE # add map size argument
-        self.display_ = args.display
+        self.display_ = args.no_display
         self.timer_ms_ = TIMER_MS
         if (args.timer is not None):
             self.timer_ms_ = args.timer

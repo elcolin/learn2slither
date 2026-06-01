@@ -4,7 +4,7 @@ from game_state import GameState
 from param import Parameters
 from snake import Snake
 from utils import directions
-from map import Map
+from map import Map, NUMBER_OF_GREEN_APPLE, NUMBER_OF_RED_APPLE, RED_APPLE, GREEN_APPLE
 import numpy as np
 import sys
 
@@ -24,6 +24,8 @@ class Simulation:
 
     def reset_simulation(self):
         game_state  = GameState(Snake([(1,1), (1,2), (1,3)]), Map(self.param.map_size_))
+        game_state.map_.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
+        game_state.map_.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
 
     def simulate(self, game_state: GameState):
