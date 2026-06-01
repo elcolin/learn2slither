@@ -19,11 +19,11 @@ class GameState:
             return True
         return False
 
-    def game_iteration(self, at: int, item: str):
+    def game_iteration(self, at_idx: int, item: str):
         if (item == RED_APPLE):
             self.snake_status_ = self.snake_.delete_tail()
             self.map_.update_snake_position(self.snake_)
-        self.snake_.take_action(at)
+        self.snake_.take_action(at_idx)
         if (item != GREEN_APPLE):
             self.snake_status_ = self.snake_.delete_tail()
         if item == 'W' or item == 'S':

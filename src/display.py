@@ -23,13 +23,10 @@ class DisplayGame:
             self.root.withdraw()
             return
         self.root.title("Snake")
-        width = MAP_SIZE * 40
-        self.root.geometry(f"{width}x{width}")  # optionnel : taille en pixels
+        self.width = MAP_SIZE * 40
+        self.root.geometry(f"{self.width}x{self.width}")  # optionnel : taille en pixels
         self.canvas = tk.Canvas(self.root, width=MAP_SIZE * 40, height=MAP_SIZE * 40)
         self.canvas.pack()
-
-        # self.status_label = tk.Label(self.root, font=("Arial", 12), fg="gray")
-        # self.status_label.pack(side="bottom", fill="x")
 
     def draw_rectangle(self, coords: tuple[int, int], color: str):
          
@@ -51,17 +48,61 @@ class DisplayGame:
                 color = colors.get(cell_value, "white")
                 if (self.canvas):
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
+               
+    def update_avg(self, avg: float):
+        self.score_text = self.canvas.create_text(
+            self.width - self.width // 4,
+            20,
+            anchor="w",
+            text="",
+            fill="green",
+            font=("Arial", 16, "bold")
+        )
+        self.canvas.itemconfig(
+        self.score_text,
+        text=f"avg: {avg}"
+        )
+
     def update_snake(self, length: int):
         self.score_text = self.canvas.create_text(
-            10, 10,
-            anchor="nw",
-            text="Snake length: 3",
+            self.width // 2,
+            20,
+            anchor="center",
+            text="",
             fill="blue",
             font=("Arial", 16, "bold")
         )
         self.canvas.itemconfig(
         self.score_text,
         text=f"Snake length: {length}"
+        )
+
+    def update_best(self, best: int):
+        self.score_text = self.canvas.create_text(
+            self.width // 4,
+            20,
+            anchor="e",
+            text="",
+            fill="red",
+            font=("Arial", 16, "bold")
+        )
+        self.canvas.itemconfig(
+        self.score_text,
+        text=f"best: {best}"
+        )
+
+    def update_sessions(self, sessions_num: int):
+        self.score_text = self.canvas.create_text(
+            self.width // 2,
+            self.width  - 20,
+            anchor="center",
+            text="",
+            fill="blue",
+            font=("Arial", 16, "bold")
+        )
+        self.canvas.itemconfig(
+        self.score_text,
+        text=f"Session: {sessions_num}"
         )
 
     def set_timer_callback(self, time , func):

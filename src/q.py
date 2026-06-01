@@ -2,26 +2,41 @@ import numpy as np
 from utils import *
 import copy
 
-LEARNING_RATE = 0.1
 class Q :
+    """
+        Class used to generate a Q Table
+            States are keys following the given format:
+                ('0', '0', 'W')
+                Note : tuple size can vary
+            States access to Q values in the Q table:
+                [0.0, 0.0, 0.0, 0.0]
+                These values represent the reward from each action (UP, DOWN, RIGHT, LEFT)
+
+    """
     def __init__(self, learning_rate : np.float64):
         self.learning_rate_: np.float64 = learning_rate
         self.discount_factor_: np.float64 = 0.9 #gamma
-        self.r : np.float64 = 0
-        # self.eps : np.float64  = 0.1
         self.q_table_ = {}
-        # self.q_table_['0000'] = [[0.0, 0.0, 0.0, 0.0]]
 
     def load_q_table(self, q_table: dict):
         self.q_table = q_table
 
-    def create_state(self, key):
-        if (key not in self.q_table_):
-            self.q_table_[key] = [0.0, 0.0, 0.0, 0.0]
+    def create_state(self, st: tuple[str]):
+        """
+            Creates a q spacing for q values of a given state
+                Args:
+                    st: state, the given key
+        """
+        if (st not in self.q_table_):
+            self.q_table_[st] = [0.0, 0.0, 0.0, 0.0]
             
-    def get_qt_max(self, st):
-        # if not st:
-            # return -np.inf
+    def get_qt_max(self, st: tuple[str]):
+        """
+            Gets best Q value based on state
+            Args:
+                st: Represents a key used to index Q values
+        """
+        print(st)
         return np.max(self.q_table_[st])
     
     def generate_action(self, st, eps: np.float64) -> int:

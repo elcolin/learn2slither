@@ -13,10 +13,10 @@ class Snake :
     def project_head(self, direction: tuple[int, int]) -> tuple[int]:
         return (self.head_[Y] + direction[Y], self.head_[X] + direction[X])
     
-    def take_action(self, action: tuple[int]) -> tuple[int, int]:
+    def take_action(self, at_idx: tuple[int]) -> tuple[int, int]:
         # self.update_snake(self.project_head(direction))
         # print(directions[action])
-        new_head_coords = self.project_head(directions[action])
+        new_head_coords = self.project_head(directions[at_idx])
         # print(new_head_coords)
         self.head_to_tail(self.head_)
         self.define_new_head_coords(new_head_coords)
@@ -40,7 +40,6 @@ class Snake :
         return SNAKE_IS_ALIVE
 
     def define_new_head_coords(self, head_coords: tuple[int]):
-        print(head_coords)
         self.snake_coords_.insert(0, head_coords)
         self.head_ = head_coords
 

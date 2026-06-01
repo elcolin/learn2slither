@@ -21,13 +21,17 @@ class Simulation:
         if (param.source_file_ is not None):
             self.q.load_q_table(param.q_table_)
         self.sessions_idx_ = 0
+        self.tot_ = 0
+        self.best_ = 3
         self.reset_simulation()
 
     def reset_simulation(self):
+        self.sessions_idx_ += 1
         game_state  = GameState(Snake([(1,1), (1,2), (1,3)]), Map(self.param.map_size_))
         game_state.map_.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
         game_state.map_.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
+
 
     def simulate(self, game_state: GameState):
         print("---")
@@ -35,32 +39,29 @@ class Simulation:
             self.save_model()
         self.display_.draw_grid(game_state.map_.grid_)
 
-        # st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
         st = []
         at = []
         qt = []
-        action: Optional[int] = 0
+        # "random rate": chooses random action 10 percent of the time
+        eps : int = 0.1
+
         for i in range(len(directions)):
+            # Getting state in all directions
             st.append(game_state.map_.get_direction(directions[i], game_state.snake_.head_, self.param.depth_))
             if (st[i] not in self.q.q_table_):
-                print("out")
                 self.q.create_state(st[i])
-                # print(st[i])
-                at.append(self.q.generate_action(st[i], 1))
-                qt.append(self.q.get_qt_max(st[i]))
-            else:
-                at.append(self.q.generate_action(st[i], 0.1))
-                qt.append(self.q.get_qt_max(st[i]))
-            print(st[i])
-        # print("at: ", at)
-        # print("qt: ", qt)
-        i = np.argmax(qt)
-        new_coord = game_state.snake_.project_head(directions[i])
-        print("new_coord: ", new_coord)
+                # If state doesn't exist, then go fully random on action choice
+                eps = 1
+            at.append(self.q.generate_action(st[i], eps))
+            qt.append(self.q.get_qt_max(st[i]))
+    
+        at_idx = np.argmax(qt)
+        new_coord = game_state.snake_.project_head(directions[at_idx])
         item = game_state.map_.grid_[new_coord]
 
-        game_state.game_iteration(i, item)
-        # new_st = game_state.map_.get_snake_surroundings(game_state.snake_.head_, self.param.depth_)
+        # Execute action
+        game_state.game_iteration(at_idx, item)
+
         new_st = []
         new_qt = []
         for k in range(len(directions)):
@@ -70,19 +71,33 @@ class Simulation:
                 new_qt.append(self.q.get_qt_max(st[k]))
             else:
                 new_qt.append(self.q.get_qt_max(new_st[k]))
-        # print(new_st[k])
-        j = np.argmax(new_qt)
-        r = self.q.evaluate_item(item)
 
-        print("r:", r, "qt:", qt[i], "at:", at[i], "new_qt:", new_qt[j])
-        self.q.update(r, st[i], at[i], new_st[j])
+        new_at_idx = np.argmax(new_qt)
+        r = self.q.evaluate_item(item)
+        self.q.update(r, st[at_idx], at[at_idx], new_st[new_at_idx])
+
+
+        self.display_.draw_grid(game_state.map_.grid_)
+        snake_len = len(game_state.snake_.snake_coords_)
+        if (snake_len > self.best_):
+            self.best_ = len(game_state.snake_.snake_coords_)
+        self.update_display_stats(snake_len)
+
         if not game_state.is_snake_alive():
+            self.tot_ += snake_len
             self.reset_simulation()
             return
-        self.display_.draw_grid(game_state.map_.grid_)
-        self.display_.update_snake(len(game_state.snake_.snake_coords_))
-        print("len", len(game_state.snake_.snake_coords_))
+        
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
+
+
+    def update_display_stats(self, snake_len: int):
+        self.display_.update_snake(snake_len)
+        self.display_.update_sessions(self.sessions_idx_)
+        self.display_.update_avg(self.tot_ / self.sessions_idx_)
+        self.display_.update_best(self.best_)
+
+
 
     def ctrl_c_save_model(self, signum, frame):
         self.save_model()
