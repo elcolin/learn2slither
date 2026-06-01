@@ -1,3 +1,4 @@
-sudo dnf install python3-tkinter
+python3 -m pip install pipreqs
 python -m ensurepip --upgrade
-pip3 install -r requirements.txt
+sudo dnf install python3-tkinter
+python3 -m pip install -r requirements.txt
