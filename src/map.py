@@ -19,6 +19,7 @@ class Map:
         if (self.grid_[coord] == EMPTY):
             return True
         return False
+    
     def return_item(self, coords: tuple[int, int]) -> str:
         return self.grid_[coords]
     
@@ -45,17 +46,18 @@ class Map:
                     key += str(self.grid_[y][x])
                     continue
         return key
-    def get_snake_surroundings(self, head_coords: tuple[int, int], depth : int = 1) -> tuple:
+
+    def get_snake_surroundings(self, head_coords: tuple[int, int]) -> tuple:
         key: str = []
-        for i in range(1, depth):
+        for i in range(1, MAP_SIZE):
             for direction in directions:
                 coords = self.project_coord(head_coords, direction, i)
                 key += self.grid_[coords]
         return tuple(key)
     
-    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int], depth : int = 1) -> Optional[tuple]:
+    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int]) -> Optional[tuple]:
         key: str = []
-        for i in range(1, depth + 1):
+        for i in range(1, MAP_SIZE):
             coords = self.project_coord(head_coords, direction, i)
             if (not coords):
                 return tuple(key)
@@ -90,9 +92,7 @@ class Map:
         if (self.grid_[snake.head_] == RED_APPLE):
             self.generate_apples(1, RED_APPLE)
 
-        # print("last:", snake.head_)
         self.grid_[snake.head_] = SNAKE_HEAD
-        # print(snake.head_)
 
                 
     def generate_coords(self) -> tuple[int]:

@@ -50,6 +50,8 @@ class DisplayGame:
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
                
     def update_avg(self, avg: float):
+        if (not self.display_activated_):
+            return
         self.score_text = self.canvas.create_text(
             self.width - self.width // 4,
             20,
@@ -64,6 +66,8 @@ class DisplayGame:
         )
 
     def update_snake(self, length: int):
+        if (not self.display_activated_):
+            return
         self.score_text = self.canvas.create_text(
             self.width // 2,
             20,
@@ -78,6 +82,8 @@ class DisplayGame:
         )
 
     def update_best(self, best: int):
+        if (not self.display_activated_):
+            return
         self.score_text = self.canvas.create_text(
             self.width // 4,
             20,
@@ -92,6 +98,8 @@ class DisplayGame:
         )
 
     def update_sessions(self, sessions_num: int):
+        if (not self.display_activated_):
+            return
         self.score_text = self.canvas.create_text(
             self.width // 2,
             self.width  - 20,

@@ -12,7 +12,6 @@ import sys
 class Simulation:
     def __init__(self, initial_game_state: GameState, display: DisplayGame, param: Parameters):
         self.param = param
-        self.initial_game_state_ = initial_game_state
         self.display_ = display
         if (param.learn_ == True):
             self.q = Q(1)
@@ -22,10 +21,13 @@ class Simulation:
             self.q.load_q_table(param.q_table_)
         self.sessions_idx_ = 0
         self.tot_ = 0
-        self.best_ = 3
+        self.best_ = 0
+        self.avg_coord_ = np.array([])
         self.reset_simulation()
 
     def reset_simulation(self):
+        if (self.param.sessions_ != -1 and self.sessions_idx_ >= self.param.sessions_ ):
+            self.exit()
         self.sessions_idx_ += 1
         game_state  = GameState(Snake([(1,1), (1,2), (1,3)]), Map(self.param.map_size_))
         game_state.map_.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
@@ -35,10 +37,7 @@ class Simulation:
 
     def simulate(self, game_state: GameState):
         print("---")
-        if (self.param.sessions_ != -1 and self.sessions_idx_ >= self.param.sessions_ ):
-            self.save_model()
-        self.display_.draw_grid(game_state.map_.grid_)
-
+        game_state.map_.print_snakes_vision(game_state.snake_.head_)
         st = []
         at = []
         qt = []
@@ -47,30 +46,35 @@ class Simulation:
 
         for i in range(len(directions)):
             # Getting state in all directions
-            st.append(game_state.map_.get_direction(directions[i], game_state.snake_.head_, self.param.depth_))
+            st.append(game_state.map_.get_direction(directions[i], game_state.snake_.head_))
             if (st[i] not in self.q.q_table_):
                 self.q.create_state(st[i])
                 # If state doesn't exist, then go fully random on action choice
                 eps = 1
             at.append(self.q.generate_action(st[i], eps))
             qt.append(self.q.get_qt_max(st[i]))
-    
+
+        # Getting idx for the highest q value
         at_idx = np.argmax(qt)
         new_coord = game_state.snake_.project_head(directions[at_idx])
         item = game_state.map_.grid_[new_coord]
+        # test = np.std(self.avg_coord_, axis=1)
+        # print(test)
 
+        # print(st)
         # Execute action
         game_state.game_iteration(at_idx, item)
+        self.avg_coord_.append(new_coord)
 
         new_st = []
         new_qt = []
+
         for k in range(len(directions)):
-            new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_, self.param.depth_))
+            new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_))
             if (new_st[k] not in self.q.q_table_):
                 self.q.create_state(new_st[k])
-                new_qt.append(self.q.get_qt_max(st[k]))
-            else:
-                new_qt.append(self.q.get_qt_max(new_st[k]))
+                # Appending max Q value to new state based on previous state
+            new_qt.append(self.q.get_qt_max(new_st[k]))
 
         new_at_idx = np.argmax(new_qt)
         r = self.q.evaluate_item(item)
@@ -87,7 +91,7 @@ class Simulation:
             self.tot_ += snake_len
             self.reset_simulation()
             return
-        
+
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
 
 
@@ -97,10 +101,19 @@ class Simulation:
         self.display_.update_avg(self.tot_ / self.sessions_idx_)
         self.display_.update_best(self.best_)
 
+    def print_stats(self):
+        print("Number of sessions: ", self.sessions_idx_)
+        print("Best snake length: ", self.best_)
+        print("Average length: ", self.tot_ / self.sessions_idx_)
+        print("Number of stored states: ", self.q.get_q_table_size())
+
+    def exit(self):
+        self.print_stats()
+        self.save_model()
 
 
     def ctrl_c_save_model(self, signum, frame):
-        self.save_model()
+        self.exit()
         
     def save_model(self):
         if self.param.destination_file_ is None:

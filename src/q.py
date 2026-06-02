@@ -18,6 +18,9 @@ class Q :
         self.discount_factor_: np.float64 = 0.9 #gamma
         self.q_table_ = {}
 
+    def get_q_table_size(self):
+        return len(self.q_table_)
+
     def load_q_table(self, q_table: dict):
         self.q_table = q_table
 
@@ -36,7 +39,6 @@ class Q :
             Args:
                 st: Represents a key used to index Q values
         """
-        print(st)
         return np.max(self.q_table_[st])
     
     def generate_action(self, st, eps: np.float64) -> int:
@@ -55,6 +57,7 @@ class Q :
 
     def evaluate_item(self, item: str) -> np.float64:
         v = str(item)
+
         r : int = 0
         match v:
             case 'W': r = -2

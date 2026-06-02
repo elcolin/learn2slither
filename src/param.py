@@ -9,7 +9,7 @@ class Parameters:
     def __init__(self):
         parser = argparse.ArgumentParser(description="") 
         parser.add_argument(
-        "--no_display",   # nom de l'argument
+        "--no-display",   # nom de l'argument
         action="store_false",
         help="Desactiver l'affichage"
         )
@@ -30,16 +30,13 @@ class Parameters:
             type=int
         )
         parser.add_argument(
-            "--no_learn",
+            "--no-learn",
             action="store_false"
         )
         parser.add_argument(
             "--no-random",
             action="store_false"
         )
-        parser.add_argument(
-            "--depth",
-            type=int)
         args = parser.parse_args()
         self.map_size_ = MAP_SIZE # add map size argument
         self.display_ = args.no_display
@@ -54,6 +51,5 @@ class Parameters:
         self.destination_file_ : Optional[str] = args.dst
         self.source_file_ : Optional[str] = args.src
         self.learn_ = args.no_learn # float ?
-        self.depth_ = args.depth
 
         

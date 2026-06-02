@@ -43,16 +43,6 @@ class Snake :
         self.snake_coords_.insert(0, head_coords)
         self.head_ = head_coords
 
-        
-    # def move_snake(self, head_coords: tuple[int]):
-        # if self.snake_coords_ :
-            # self.tampered_coords_ = self.body_[-1]
-            # self.snake_coords_.pop()
-            # self.snake_coords_.insert(0, head_coords)
-            # self.body_.pop()
-            # self.body_.insert(0, self.head_)
-        # self.head_ = head_coords
-
     def _init_snake_position(self, coords: list[tuple]):
         self.snake_coords_ = coords
         self.head_ = coords[0]
