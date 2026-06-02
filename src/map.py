@@ -28,9 +28,10 @@ class Map:
         new_x = head_coords[X] + (add_coords[X] * depth)
         
 
-        new_y = max(0, min(new_y, len(self.grid_) - 1))
-        new_x = max(0, min(new_x, len(self.grid_[0]) - 1))
-
+        if (new_y < 0 or new_y > len(self.grid_) - 1):
+            return None
+        if (new_x < 0 or new_x > len(self.grid_[0]) - 1):
+            return None
         return (new_y, new_x)
 
     def get_snakes_vision(self, head_coords: tuple[int, int]):
@@ -56,6 +57,8 @@ class Map:
         key: str = []
         for i in range(1, depth + 1):
             coords = self.project_coord(head_coords, direction, i)
+            if (not coords):
+                return tuple(key)
             key += self.grid_[coords]
             if self.grid_[coords] == 'S' or self.grid_[coords] == 'W':
                 return tuple(key)
