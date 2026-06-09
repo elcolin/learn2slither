@@ -12,3 +12,4 @@ TODO :
 - Verify loading the model
 - Add time count
 - Save stats in model
+- place snake randomly

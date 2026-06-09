@@ -17,11 +17,11 @@ DOWN : tuple[int, int] = (1, 0)
 LEFT : tuple[int, int] = (0, -1)
 RIGHT : tuple[int, int] = (0, 1)
 
-directions: list[tuple[int, int]] = [UP, DOWN, RIGHT, LEFT]
+directions: list[tuple[int, int]] = [UP, RIGHT, DOWN, LEFT]
 
 # opposite_directions: list[tuple[int, int]] = [DOWN, UP, RIGHT, LEFT]
 
-directions_names = ["UP", "DOWN", "LEFT", "RIGHT"]
+directions_names = ["UP", "RIGHT", "DOWN", "LEFT"]
 
 # COORDS
 X = 1

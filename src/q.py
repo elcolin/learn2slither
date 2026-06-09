@@ -22,7 +22,7 @@ class Q :
         return len(self.q_table_)
 
     def load_q_table(self, q_table: dict):
-        self.q_table = q_table
+        self.q_table_ = q_table
 
     def create_state(self, st: tuple[str]):
         """
@@ -60,10 +60,10 @@ class Q :
 
         r : int = 0
         match v:
-            case 'W': r = -2
-            case '0': r = -0.2
+            case 'W': r = -25
+            case '0': r = -0.1
             case 'R': r = -1
-            case 'S': r = -2
+            case 'S': r = -25
             case 'G': r = 1
             case _: r = 0
         return r

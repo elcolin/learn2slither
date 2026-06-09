@@ -31,7 +31,7 @@ class Parameters:
         )
         parser.add_argument(
             "--no-learn",
-            action="store_false"
+            action="store_true"
         )
         parser.add_argument(
             "--no-random",
@@ -50,6 +50,6 @@ class Parameters:
             self.q_table_ = np.load(args.src, allow_pickle=True).item()
         self.destination_file_ : Optional[str] = args.dst
         self.source_file_ : Optional[str] = args.src
-        self.learn_ = args.no_learn # float ?
+        self.no_learn_ = args.no_learn # float ?
 
         
