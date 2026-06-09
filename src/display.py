@@ -15,7 +15,7 @@ colors = {
 }
 
 class DisplayGame:
-    def __init__(self, display_activated: bool = True):
+    def __init__(self, map_size, display_activated: bool = True):
         self.display_activated_ = display_activated
         self.root = tk.Tk()
         self.canvas : Optional[tk.Canvas] = None
@@ -23,9 +23,12 @@ class DisplayGame:
             self.root.withdraw()
             return
         self.root.title("Snake")
-        self.width = MAP_SIZE * 40
+
+        self.map_size_ = map_size
+        self.width = self.map_size_ * 40
+        print(self.map_size_)
         self.root.geometry(f"{self.width}x{self.width}")  # optionnel : taille en pixels
-        self.canvas = tk.Canvas(self.root, width=MAP_SIZE * 40, height=MAP_SIZE * 40)
+        self.canvas = tk.Canvas(self.root, width=self.map_size_ * 40, height=self.map_size_ * 40)
         self.canvas.pack()
 
     def draw_rectangle(self, coords: tuple[int, int], color: str):
@@ -55,10 +58,8 @@ class DisplayGame:
     def update_snake(self, length: int):
         self.update_text(self.width // 2, 20, "center", f"Snake length: {length}", "blue")
     
-
     def update_best(self, best: int):
-        self.update_text(self.width // 4, 20, "e", f"Best: {best}", "red")
-        
+        self.update_text(self.width // 4, 20, "e", f"Best: {best}", "red")    
 
     def update_sessions(self, sessions_num: int):
         self.update_text(self.width // 2, self.width  - 20, "center", f"Session: {sessions_num}", "blue")

@@ -49,7 +49,7 @@ class Map:
 
     def get_snake_surroundings(self, head_coords: tuple[int, int]) -> tuple:
         key: str = []
-        for i in range(1, MAP_SIZE):
+        for i in range(1, self.map_size_):
             for direction in directions:
                 coords = self.project_coord(head_coords, direction, i)
                 key += self.grid_[coords]
@@ -57,7 +57,7 @@ class Map:
     
     def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int]) -> Optional[tuple]:
         key: str = []
-        for i in range(1, MAP_SIZE):
+        for i in range(1, self.map_size_):
             coords = self.project_coord(head_coords, direction, i)
             if (not coords):
                 return tuple(key)
@@ -104,6 +104,13 @@ class Map:
             coords = self.generate_coords()
         return coords
     
+    def generate_consecutive_valid(self, consecutive: int):
+        while(True):
+            head_coords = self.generate_valid_coords()
+            for i in range(1, 3):
+                if (not self.is_empty_space(head_coords)):
+                    break
+
     def generate_apples(self, number_of_apples: int, apple_type: str):
         for _ in range(number_of_apples):
             coords : tuple[int] = self.generate_valid_coords()

@@ -30,6 +30,10 @@ class Parameters:
             type=int
         )
         parser.add_argument(
+            "--map-size",
+            type=int
+        )
+        parser.add_argument(
             "--no-learn",
             action="store_true"
         )
@@ -38,7 +42,9 @@ class Parameters:
             action="store_false"
         )
         args = parser.parse_args()
-        self.map_size_ = MAP_SIZE # add map size argument
+        self.map_size_ = MAP_SIZE
+        if args.map_size is not None:
+            self.map_size_ = args.map_size # add map size argument
         self.display_ = args.no_display
         self.timer_ms_ = TIMER_MS
         if (args.timer is not None):

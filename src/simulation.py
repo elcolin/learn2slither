@@ -4,7 +4,7 @@ from game_state import GameState
 from param import Parameters
 from snake import Snake
 from utils import directions, X, Y
-from map import Map, NUMBER_OF_GREEN_APPLE, NUMBER_OF_RED_APPLE, RED_APPLE, GREEN_APPLE, MAP_SIZE
+from map import Map, NUMBER_OF_GREEN_APPLE, NUMBER_OF_RED_APPLE, RED_APPLE, GREEN_APPLE
 from typing import Optional
 import numpy as np
 import sys
@@ -95,8 +95,6 @@ class Simulation:
             self.reset_simulation()
             self.death_wall_ = self.death_wall_ + 1 if item == 'W' else self.death_wall_
             self.death_snake_ = self.death_snake_ + 1 if item == 'S' else self.death_snake_
-            game_state.map_.print_snakes_vision(game_state.snake_.head_)
-
             return
 
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
