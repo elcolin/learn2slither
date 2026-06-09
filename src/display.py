@@ -50,67 +50,29 @@ class DisplayGame:
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
                
     def update_avg(self, avg: float):
-        if (not self.display_activated_):
-            return
-        self.score_text = self.canvas.create_text(
-            self.width - self.width // 4,
-            20,
-            anchor="w",
-            text="",
-            fill="green",
-            font=("Arial", 16, "bold")
-        )
-        self.canvas.itemconfig(
-        self.score_text,
-        text=f"avg: {avg}"
-        )
+        self.update_text(self.width - self.width // 4, 20, "w", f"avg: {avg}", "green")
 
     def update_snake(self, length: int):
-        if (not self.display_activated_):
-            return
-        self.score_text = self.canvas.create_text(
-            self.width // 2,
-            20,
-            anchor="center",
-            text="",
-            fill="blue",
-            font=("Arial", 16, "bold")
-        )
-        self.canvas.itemconfig(
-        self.score_text,
-        text=f"Snake length: {length}"
-        )
+        self.update_text(self.width // 2, 20, "center", f"Snake length: {length}", "blue")
+    
 
     def update_best(self, best: int):
-        if (not self.display_activated_):
-            return
-        self.score_text = self.canvas.create_text(
-            self.width // 4,
-            20,
-            anchor="e",
-            text="",
-            fill="red",
-            font=("Arial", 16, "bold")
-        )
-        self.canvas.itemconfig(
-        self.score_text,
-        text=f"best: {best}"
-        )
+        self.update_text(self.width // 4, 20, "e", f"Best: {best}", "red")
+        
 
     def update_sessions(self, sessions_num: int):
+        self.update_text(self.width // 2, self.width  - 20, "center", f"Session: {sessions_num}", "blue")
+
+    def update_text(self, x, y, anchor, text, color):
         if (not self.display_activated_):
             return
         self.score_text = self.canvas.create_text(
-            self.width // 2,
-            self.width  - 20,
-            anchor="center",
-            text="",
-            fill="blue",
+            x,
+            y,
+            anchor=anchor,
+            text=text,
+            fill=color,
             font=("Arial", 16, "bold")
-        )
-        self.canvas.itemconfig(
-        self.score_text,
-        text=f"Session: {sessions_num}"
         )
 
     def set_timer_callback(self, time , func):

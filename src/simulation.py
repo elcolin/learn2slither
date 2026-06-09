@@ -48,13 +48,13 @@ class Simulation:
         for i in range(len(directions)):
         # "random rate": chooses random action 10 percent of the time
             eps : int = 0.1
-            # Getting state in all directions
+            # Getting state in direction
             fut_st = game_state.map_.get_direction(directions[i], game_state.snake_.head_)
             if fut_st in st:
                 # If states exists more than once in current position than generate random
                 eps = 1
-                idx = st.index(fut_st)
-                at[idx] = self.q.generate_action(st[idx], eps)
+                prev_idx = st.index(fut_st)
+                at[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
             if (st[i] not in self.q.q_table_):
                 self.q.create_state(st[i])
