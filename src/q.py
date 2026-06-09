@@ -50,6 +50,13 @@ class Q :
         return argmax
 
     def update(self, r: np.float64, st, at: int, st1):
+        """ Updates the q value of the state based on the reward of the new state
+            Args:
+                r : reward
+                st : state
+                st1 : new state
+                at : the index of the wanted q value (index of action)   
+        """
         max_q_value_st1 = np.max(self.q_table_[st1])
         q_value_at_st = self.q_table_[st][at]
 

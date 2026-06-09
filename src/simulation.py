@@ -38,37 +38,41 @@ class Simulation:
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
 
 
+    def get_state(self, game_state: GameState, direction):
+        st = game_state.map_.get_direction(direction, game_state.snake_.head_)
+        return st
+
+
     def simulate(self, game_state: GameState):
-        print("---")
         game_state.map_.print_snakes_vision(game_state.snake_.head_)
         st = []
-        at = []
-        qt = []
+        at_in_fut = []
+        qt = [] 
 
         for i in range(len(directions)):
         # "random rate": chooses random action 10 percent of the time
-            eps : int = 0.1
+            eps = 0.1
             # Getting state in direction
-            fut_st = game_state.map_.get_direction(directions[i], game_state.snake_.head_)
+            fut_st = self.get_state(game_state, directions[i])
+            if (fut_st not in self.q.q_table_):
+                self.q.create_state(fut_st)
+                eps = 1
             if fut_st in st:
                 # If states exists more than once in current position than generate random
                 eps = 1
                 prev_idx = st.index(fut_st)
-                at[prev_idx] = self.q.generate_action(st[prev_idx], eps)
+                at_in_fut[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
-            if (st[i] not in self.q.q_table_):
-                self.q.create_state(st[i])
-                # If state doesn't exist, then go fully random on action choice
-                eps = 1
-            at.append(self.q.generate_action(st[i], eps))
-            qt.append(self.q.q_table_[st[i]][at[i]])
+            # expected value
+            at_in_fut.append(self.q.generate_action(fut_st, eps))
+            qt.append(self.q.q_table_[fut_st][at_in_fut[i]])
 
-        # Getting idx for the highest q value
-        at_idx = np.argmax(qt)
-        new_coord = game_state.snake_.project_head(directions[at_idx])
+        # Selecting the best
+        at = np.argmax(qt)
+        new_coord = game_state.snake_.project_head(directions[at])
         item = game_state.map_.grid_[new_coord]
 
-        game_state.game_iteration(at_idx, item)
+        game_state.game_iteration(at, item)
 
         new_st = []
         new_qt = []
@@ -77,30 +81,33 @@ class Simulation:
             new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_))
             if (new_st[k] not in self.q.q_table_):
                 self.q.create_state(new_st[k])
-                # Appending max Q value to new state based on previous state
+            # Appending max Q value of new state
             new_qt.append(self.q.get_qt_max(new_st[k]))
 
-        new_at_idx = np.argmax(new_qt)
+        new_at = np.argmax(new_qt)
         r = self.q.evaluate_item(item)
-        self.q.update(r, st[at_idx], at[at_idx], new_st[new_at_idx])
+        # Updating the q value of the previous state based on new state
+        self.q.update(r, st[at], at_in_fut[at], new_st[new_at])
 
 
         self.display_.draw_grid(game_state.map_.grid_)
         snake_len = len(game_state.snake_.snake_coords_)
-        self.best_ = snake_len if snake_len > self.best_ else self.best_
         self.update_display_stats(snake_len)
 
         if not game_state.is_snake_alive():
-            self.tot_ += snake_len
-            self.reset_simulation()
-            self.death_wall_ = self.death_wall_ + 1 if item == 'W' else self.death_wall_
-            self.death_snake_ = self.death_snake_ + 1 if item == 'S' else self.death_snake_
+            self.update_dead_snake_stats(snake_len, item)
             return
 
         self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
 
+    def update_dead_snake_stats(self, snake_len: int, item):
+        self.tot_ += snake_len
+        self.reset_simulation()
+        self.death_wall_ = self.death_wall_ + 1 if item == 'W' else self.death_wall_
+        self.death_snake_ = self.death_snake_ + 1 if item == 'S' else self.death_snake_
 
     def update_display_stats(self, snake_len: int):
+        self.best_ = snake_len if snake_len > self.best_ else self.best_
         self.display_.update_snake(snake_len)
         self.display_.update_sessions(self.sessions_idx_)
         self.display_.update_avg(self.tot_ / self.sessions_idx_)

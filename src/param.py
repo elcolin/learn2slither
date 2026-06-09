@@ -53,7 +53,11 @@ class Parameters:
         if (args.sessions is not None):
             self.sessions_ = args.sessions
         if (args.src is not None):
-            self.q_table_ = np.load(args.src, allow_pickle=True).item()
+            try:
+                self.q_table_ = np.load(args.src, allow_pickle=True).item()
+            except:
+                print("Loading q table failed, does the file exist and in correct format ?")
+                exit()
         self.destination_file_ : Optional[str] = args.dst
         self.source_file_ : Optional[str] = args.src
         self.no_learn_ = args.no_learn # float ?

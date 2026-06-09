@@ -26,7 +26,6 @@ class DisplayGame:
 
         self.map_size_ = map_size
         self.width = self.map_size_ * 40
-        print(self.map_size_)
         self.root.geometry(f"{self.width}x{self.width}")  # optionnel : taille en pixels
         self.canvas = tk.Canvas(self.root, width=self.map_size_ * 40, height=self.map_size_ * 40)
         self.canvas.pack()

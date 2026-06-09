@@ -67,6 +67,7 @@ class Map:
         return tuple(key)
 
     def print_snakes_vision(self, head_coords: tuple[int, int]):
+        print("----")
         for y in range(self.grid_.shape[Y]):
             if y == head_coords[Y]:
                 for char in self.grid_[y]:
