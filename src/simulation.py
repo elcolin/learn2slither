@@ -73,12 +73,17 @@ class Simulation:
         self.q.update(r, chosen_st, prediction_at, new_st[new_at])
 
     def get_states_values_actions_all_direction(self, game_state):
+        """
+            Gets state in each direction, the potential future actions with the
+            highest q values and their associated max q values.
+        """
         st = []
         at_in_fut = []
         qt = []
 
         for i in range(len(ut.directions)):
-            # "random rate": chooses random action 10 percent of the time
+            # "random rate": chooses potential q value at random 10 percent of the time
+            # 100 when state doesn't exist, or state exists in multiple directions
             eps = 0.1
             # Getting state in direction
             fut_st = self.get_state(game_state, ut.directions[i])
@@ -91,12 +96,14 @@ class Simulation:
                 eps = 1
                 at_in_fut[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
-            # expected value
             at_in_fut.append(self.q.generate_action(fut_st, eps))
             qt.append(self.q.get_qt_max(fut_st))
         return st, qt, at_in_fut
 
     def simulate(self, game_state: GameState):
+        """
+            The function that runs a course of movement and updates the game
+        """
         game_state.map_.print_snakes_vision(game_state.snake_.head_)
         st, qt, at_in_fut = (
             self.get_states_values_actions_all_direction(game_state))
