@@ -1,6 +1,6 @@
 import numpy as np
 import random
-
+from utils import MAP_SIZE
 
 class Q:
     """
@@ -19,6 +19,7 @@ class Q:
         self.learning_rate_: np.float64 = learning_rate
         self.discount_factor_: np.float64 = 0.9  # gamma
         self.q_table_ = {}
+        self.empt_ = 0
 
     def get_q_table_size(self):
         return len(self.q_table_)
@@ -71,9 +72,13 @@ class Q:
         v = str(item)
 
         r: int = 0
+        if (item != '0'):
+            self.empt_ = 0
         match v:
             case 'W': r = -2
-            case '0': r = -0.1
+            case '0': 
+                r = max(-0.5, (-0.1 / MAP_SIZE) * self.empt_)
+                self.empt_ = self.empt_ + 1
             case 'R': r = -1
             case 'S': r = -2
             case 'G': r = 1

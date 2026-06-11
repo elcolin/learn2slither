@@ -1,5 +1,7 @@
 # Q-Learning in Snake
 
+![Stat Example](performance.png)
+
 This project explores reinforcement learning through the **Q-learning function**.  
 Here are the rules:
 

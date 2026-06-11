@@ -127,6 +127,7 @@ class Simulation:
 
     def update_dead_snake_stats(self, snake_len: int, item):
         self.tot_ += snake_len
+        self.q.empt_ = 0
         self.reset_simulation()
         self.death_wall_ += item == 'W'
         self.death_snake_ += item == 'S'
