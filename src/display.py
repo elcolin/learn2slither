@@ -1,42 +1,48 @@
 import tkinter as tk
 import numpy as np
 from typing import Optional
-from utils import *
+from utils import X, Y
 CELL_SIZE = 40  # taille de chaque cellule en pixels
 
 colors = {
     'W': 'black',   # murs
     '0': 'white',   # vide
-    'H': 'darkgreen', # tête serpent
+    'H': 'darkgreen',  # tête serpent
     'S': 'green',     # corps serpent
-    'G': 'lightgreen',# pomme verte
-    'R': 'red'        ,# pomme rouge
+    'G': 'lightgreen',  # pomme verte
+    'R': 'red',  # pomme rouge
     'Y': 'yellow'
 }
+
 
 class DisplayGame:
     def __init__(self, map_size, display_activated: bool = True):
         self.display_activated_ = display_activated
         self.root = tk.Tk()
-        self.canvas : Optional[tk.Canvas] = None
-        if (display_activated == False):
+        self.canvas: Optional[tk.Canvas] = None
+        if (display_activated is False):
             self.root.withdraw()
             return
         self.root.title("Snake")
 
         self.map_size_ = map_size
         self.width = self.map_size_ * 40
-        self.root.geometry(f"{self.width}x{self.width}")  # optionnel : taille en pixels
-        self.canvas = tk.Canvas(self.root, width=self.map_size_ * 40, height=self.map_size_ * 40)
+        # optionnel : taille en pixels
+        self.root.geometry(f"{self.width}x{self.width}")
+        self.canvas = tk.Canvas(
+            self.root,
+            width=self.map_size_ * 40,
+            height=self.map_size_ * 40)
         self.canvas.pack()
 
     def draw_rectangle(self, coords: tuple[int, int], color: str):
-         
+
         if (self.canvas is None):
             return
         x1, y1 = coords[X] * CELL_SIZE, coords[Y] * CELL_SIZE
         x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
-        self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
+        self.canvas.create_rectangle(
+            x1, y1, x2, y2, fill=color, outline="gray")
 
     def draw_grid(self, grid: np.array):
         if (not self.display_activated_):
@@ -49,19 +55,37 @@ class DisplayGame:
                 cell_value = grid[r, c]
                 color = colors.get(cell_value, "white")
                 if (self.canvas):
-                    self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="gray")
-               
+                    self.canvas.create_rectangle(
+                        x1, y1, x2, y2, fill=color, outline="gray")
+
     def update_avg(self, avg: float):
-        self.update_text(self.width - self.width // 4, 20, "w", f"avg: {avg}", "green")
+        self.update_text(
+            self.width -
+            self.width //
+            4,
+            20,
+            "w",
+            f"avg: {avg}",
+            "green")
 
     def update_snake(self, length: int):
-        self.update_text(self.width // 2, 20, "center", f"Snake length: {length}", "blue")
-    
+        self.update_text(
+            self.width // 2,
+            20,
+            "center",
+            f"Snake length: {length}",
+            "blue")
+
     def update_best(self, best: int):
-        self.update_text(self.width // 4, 20, "e", f"Best: {best}", "red")    
+        self.update_text(self.width // 4, 20, "e", f"Best: {best}", "red")
 
     def update_sessions(self, sessions_num: int):
-        self.update_text(self.width // 2, self.width  - 20, "center", f"Session: {sessions_num}", "blue")
+        self.update_text(
+            self.width // 2,
+            self.width - 20,
+            "center",
+            f"Session: {sessions_num}",
+            "blue")
 
     def update_text(self, x, y, anchor, text, color):
         if (not self.display_activated_):
@@ -75,8 +99,8 @@ class DisplayGame:
             font=("Arial", 16, "bold")
         )
 
-    def set_timer_callback(self, time , func):
-            self.root.after(time, func)
+    def set_timer_callback(self, time, func):
+        self.root.after(time, func)
 
     def set_callback(self, func):
         if (self.display_activated_):

@@ -1,14 +1,17 @@
-from utils import *
+import utils as ut
 from snake import Snake
 from typing import Optional
 import copy
+import numpy as np
+import random
+
 
 class Map:
     def __init__(self, size: int):
-        self.map_size_ : int = size
-        self.grid_ : str = np.full((size, size), EMPTY)
-        self.green_apples_coords_ : list[tuple[int]] = []
-        self.red_apples_coords_ : list[tuple[int]] = []
+        self.map_size_: int = size
+        self.grid_: str = np.full((size, size), ut.EMPTY)
+        self.green_apples_coords_: list[tuple[int]] = []
+        self.red_apples_coords_: list[tuple[int]] = []
         self.generate_mandatory_walls()
         # self.generate_random_int_walls(MAP_SIZE)
         self.copy_grid_ = copy.deepcopy(self.grid_)
@@ -16,18 +19,22 @@ class Map:
         # self.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
 
     def is_empty_space(self, coord: tuple[int]) -> bool:
-        if (self.grid_[coord] == EMPTY):
+        if (self.grid_[coord] == ut.EMPTY):
             return True
         return False
-    
+
     def return_item(self, coords: tuple[int, int]) -> str:
         return self.grid_[coords]
-    
-    def project_coord(self, head_coords:tuple[int, int], add_coords: tuple[int, int], depth: int = 1):
-        
-        new_y = head_coords[Y] + (add_coords[Y] * depth)
-        new_x = head_coords[X] + (add_coords[X] * depth)
-        
+
+    def project_coord(self,
+                      head_coords: tuple[int,
+                                         int],
+                      add_coords: tuple[int,
+                                        int],
+                      depth: int = 1):
+
+        new_y = head_coords[ut.Y] + (add_coords[ut.Y] * depth)
+        new_x = head_coords[ut.X] + (add_coords[ut.X] * depth)
 
         if (new_y < 0 or new_y > len(self.grid_) - 1):
             return None
@@ -37,12 +44,12 @@ class Map:
 
     def get_snakes_vision(self, head_coords: tuple[int, int]):
         key: str = []
-        for y in range(self.grid_.shape[Y]) :
-            if y == head_coords[Y]:
+        for y in range(self.grid_.shape[ut.Y]):
+            if y == head_coords[ut.Y]:
                 key += str(self.grid_[y])
                 continue
             for x in range(self.grid_.shape[1]):
-                if x == head_coords[X]:
+                if x == head_coords[ut.X]:
                     key += str(self.grid_[y][x])
                     continue
         return key
@@ -50,12 +57,16 @@ class Map:
     def get_snake_surroundings(self, head_coords: tuple[int, int]) -> tuple:
         key: str = []
         for i in range(1, self.map_size_):
-            for direction in directions:
+            for direction in ut.directions:
                 coords = self.project_coord(head_coords, direction, i)
                 key += self.grid_[coords]
         return tuple(key)
-    
-    def get_direction(self, direction : tuple[int, int], head_coords: tuple[int, int]) -> Optional[tuple]:
+
+    def get_direction(self,
+                      direction: tuple[int,
+                                       int],
+                      head_coords: tuple[int,
+                                         int]) -> Optional[tuple]:
         key: str = []
         for i in range(1, self.map_size_):
             coords = self.project_coord(head_coords, direction, i)
@@ -68,45 +79,54 @@ class Map:
 
     def print_snakes_vision(self, head_coords: tuple[int, int]):
         print("----")
-        for y in range(self.grid_.shape[Y]):
-            if y == head_coords[Y]:
+        for y in range(self.grid_.shape[ut.Y]):
+            if y == head_coords[ut.Y]:
                 for char in self.grid_[y]:
-                   print(char, end='')
+                    print(char, end='')
                 print()
                 continue
             for x in range(self.grid_.shape[1]):
-               if x == head_coords[X]:
-                   print(self.grid_[y][x], end='')
-                   continue
-               print(' ', end='')
+                if x == head_coords[ut.X]:
+                    print(self.grid_[y][x], end='')
+                    continue
+                print(' ', end='')
             print()
         print()
-        
-    def update_snake_position(self, snake: Snake) :
+
+    def update_snake_position(self, snake: Snake):
         if snake.tampered_coords_ is not None:
-            self.grid_[snake.tampered_coords_] = self.copy_grid_[snake.tampered_coords_]
+            self.grid_[
+                snake.tampered_coords_] = self.copy_grid_[
+                snake.tampered_coords_]
         for coord in snake.body_:
             # print(snake.body_)
-            self.grid_[coord] = SNAKE_BODY
-        if (self.grid_[snake.head_] == GREEN_APPLE):
-            self.generate_apples(1, GREEN_APPLE)
-        if (self.grid_[snake.head_] == RED_APPLE):
-            self.generate_apples(1, RED_APPLE)
+            self.grid_[coord] = ut.SNAKE_BODY
+        if (self.grid_[snake.head_] == ut.GREEN_APPLE):
+            self.generate_apples(1, ut.GREEN_APPLE)
+        if (self.grid_[snake.head_] == ut.RED_APPLE):
+            self.generate_apples(1, ut.RED_APPLE)
 
-        self.grid_[snake.head_] = SNAKE_HEAD
+        self.grid_[snake.head_] = ut.SNAKE_HEAD
 
-                
     def generate_coords(self) -> tuple[int]:
-        return (random.randint(1, self.map_size_ - 2), random.randint(1, self.map_size_ - 2))
+        return (
+            random.randint(
+                1,
+                self.map_size_ -
+                2),
+            random.randint(
+                1,
+                self.map_size_ -
+                2))
 
     def generate_valid_coords(self) -> tuple[int]:
         coords: tuple[int] = (0, 0)
-        while (not self.is_empty_space(coords)) :
+        while (not self.is_empty_space(coords)):
             coords = self.generate_coords()
         return coords
-    
+
     def generate_consecutive_valid(self, consecutive: int):
-        while(True):
+        while (True):
             head_coords = self.generate_valid_coords()
             for i in range(1, 3):
                 if (not self.is_empty_space(head_coords)):
@@ -114,19 +134,19 @@ class Map:
 
     def generate_apples(self, number_of_apples: int, apple_type: str):
         for _ in range(number_of_apples):
-            coords : tuple[int] = self.generate_valid_coords()
+            coords: tuple[int] = self.generate_valid_coords()
             self.red_apples_coords_.append(coords)
             self.grid_[coords] = apple_type
 
     def generate_random_int_walls(self, number_of_walls: int):
         for _ in range(number_of_walls):
-            self.grid_[self.generate_valid_coords()] = WALL
+            self.grid_[self.generate_valid_coords()] = ut.WALL
 
     def generate_mandatory_walls(self):
-        self.grid_[0, :] = WALL
-        self.grid_[:, 0] = WALL
-        self.grid_[-1, :] = WALL
-        self.grid_[:, -1] = WALL
+        self.grid_[0, :] = ut.WALL
+        self.grid_[:, 0] = ut.WALL
+        self.grid_[-1, :] = ut.WALL
+        self.grid_[:, -1] = ut.WALL
 
     def print(self):
         print(self.grid_)

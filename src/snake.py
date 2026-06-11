@@ -1,18 +1,20 @@
-from utils import *
+from utils import X, Y, directions
 
 SNAKE_IS_DEAD = 0
 SNAKE_IS_ALIVE = 1
-class Snake :
+
+
+class Snake:
     def __init__(self, snake_coords: list[tuple]):
-        self.snake_coords_ : list[tuple] = []
-        self.head_ : tuple[int, int] = []
-        self.body_ : list[tuple] = []
-        self.tampered_coords_ : tuple[int, int] = []
+        self.snake_coords_: list[tuple] = []
+        self.head_: tuple[int, int] = []
+        self.body_: list[tuple] = []
+        self.tampered_coords_: tuple[int, int] = []
         self._init_snake_position(snake_coords)
 
     def project_head(self, direction: tuple[int, int]) -> tuple[int]:
         return (self.head_[Y] + direction[Y], self.head_[X] + direction[X])
-    
+
     def take_action(self, at_idx: tuple[int]) -> tuple[int, int]:
         # self.update_snake(self.project_head(direction))
         # print(directions[action])

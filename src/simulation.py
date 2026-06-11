@@ -3,19 +3,21 @@ from q import Q
 from game_state import GameState
 from param import Parameters
 from snake import Snake
-from utils import directions, X, Y, directions_names
-from map import Map, NUMBER_OF_GREEN_APPLE, NUMBER_OF_RED_APPLE, RED_APPLE, GREEN_APPLE
-from typing import Optional
+import utils as ut
+from map import Map
 import numpy as np
 import sys
-from collections import defaultdict
 
 
 class Simulation:
-    def __init__(self, initial_game_state: GameState, display: DisplayGame, param: Parameters):
+    def __init__(
+            self,
+            initial_game_state: GameState,
+            display: DisplayGame,
+            param: Parameters):
         self.param = param
         self.display_ = display
-        if (param.no_learn_ == True):
+        if (param.no_learn_):
             self.q = Q(0)
         else:
             self.q = Q(1)
@@ -29,50 +31,63 @@ class Simulation:
         self.reset_simulation()
 
     def reset_simulation(self):
-        if (self.param.sessions_ != -1 and self.sessions_idx_ >= self.param.sessions_ ):
+        if (self.param.sessions_ != -
+                1 and self.sessions_idx_ >= self.param.sessions_):
             self.exit()
         self.sessions_idx_ += 1
-        game_state  = GameState(Snake([(1,1), (1,2), (1,3)]), Map(self.param.map_size_))
-        game_state.map_.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
-        game_state.map_.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
-        self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
-
+        game_state = GameState(
+            Snake([(1, 1), (1, 2), (1, 3)]), Map(self.param.map_size_))
+        game_state.map_.generate_apples(
+            ut.NUMBER_OF_GREEN_APPLE,
+            ut.GREEN_APPLE)
+        game_state.map_.generate_apples(ut.NUMBER_OF_RED_APPLE, ut.RED_APPLE)
+        self.display_.set_timer_callback(
+            self.param.timer_ms_,
+            lambda: self.simulate(game_state))
 
     def get_state(self, game_state: GameState, direction):
         st = game_state.map_.get_direction(direction, game_state.snake_.head_)
         return st
 
-    def update_table_with_new_state(self, game_state, r, chosen_st, prediction_at):
+    def update_table_with_new_state(
+            self,
+            game_state,
+            r,
+            chosen_st,
+            prediction_at):
         new_st = []
         new_qt = []
 
-        for k in range(len(directions)):
-            new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_))
+        for k in range(len(ut.directions)):
+            new_st.append(
+                game_state.map_.get_direction(
+                    ut.directions[k],
+                    game_state.snake_.head_))
             if (new_st[k] not in self.q.q_table_):
                 self.q.create_state(new_st[k])
             # Appending max Q value of new state
             new_qt.append(self.q.get_qt_max(new_st[k]))
         new_at = np.argmax(new_qt)
-        
+
         # Updating the q value of the previous state based on new state
         self.q.update(r, chosen_st, prediction_at, new_st[new_at])
 
     def get_states_values_actions_all_direction(self, game_state):
         st = []
         at_in_fut = []
-        qt = [] 
+        qt = []
 
-        for i in range(len(directions)):
-        # "random rate": chooses random action 10 percent of the time
+        for i in range(len(ut.directions)):
+            # "random rate": chooses random action 10 percent of the time
             eps = 0.1
             # Getting state in direction
-            fut_st = self.get_state(game_state, directions[i])
+            fut_st = self.get_state(game_state, ut.directions[i])
             if (fut_st not in self.q.q_table_):
                 self.q.create_state(fut_st)
                 eps = 1
             indices = [i for i, state in enumerate(st) if state == fut_st]
-            for prev_idx in indices:  
-                # If states exists more than once in current position than generate random
+            for prev_idx in indices:
+                # If states exists more than once in position than go random
                 eps = 1
                 at_in_fut[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
@@ -81,17 +96,21 @@ class Simulation:
             qt.append(self.q.get_qt_max(fut_st))
         return st, qt, at_in_fut
 
-
     def simulate(self, game_state: GameState):
         game_state.map_.print_snakes_vision(game_state.snake_.head_)
-        st, qt, at_in_fut = self.get_states_values_actions_all_direction(game_state)
+        st, qt, at_in_fut = (
+            self.get_states_values_actions_all_direction(game_state))
         # Selecting the action based on q value
         at = np.argmax(qt)
-        new_coord = game_state.snake_.project_head(directions[at])
+        new_coord = game_state.snake_.project_head(ut.directions[at])
         item = game_state.map_.grid_[new_coord]
 
         game_state.game_iteration(at, game_state.map_.grid_[new_coord])
-        self.update_table_with_new_state(game_state, self.q.evaluate_item(item), st[at], at_in_fut[at])
+        self.update_table_with_new_state(
+            game_state,
+            self.q.evaluate_item(item),
+            st[at],
+            at_in_fut[at])
 
         self.display_.draw_grid(game_state.map_.grid_)
         snake_len = len(game_state.snake_.snake_coords_)
@@ -101,13 +120,15 @@ class Simulation:
             self.update_dead_snake_stats(snake_len, item)
             return
 
-        self.display_.set_timer_callback(self.param.timer_ms_, lambda : self.simulate(game_state))
+        self.display_.set_timer_callback(
+            self.param.timer_ms_,
+            lambda: self.simulate(game_state))
 
     def update_dead_snake_stats(self, snake_len: int, item):
         self.tot_ += snake_len
         self.reset_simulation()
-        self.death_wall_ = self.death_wall_ + 1 if item == 'W' else self.death_wall_
-        self.death_snake_ = self.death_snake_ + 1 if item == 'S' else self.death_snake_
+        self.death_wall_ += item == 'W'
+        self.death_snake_ += item == 'S'
 
     def update_display_stats(self, snake_len: int):
         self.best_ = snake_len if snake_len > self.best_ else self.best_
@@ -128,14 +149,11 @@ class Simulation:
         self.print_stats()
         self.save_model()
 
-
     def ctrl_c_save_model(self, signum, frame):
         self.exit()
-        
+
     def save_model(self):
         if self.param.destination_file_ is None:
             sys.exit(0)
-        #print("\nSauvegarde de la Q-table...")
         np.save(self.param.destination_file_, self.q.q_table_)
-        #print("Sauvegarde terminée !")
         sys.exit(0)
