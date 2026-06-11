@@ -67,10 +67,10 @@ class Q :
 
         r : int = 0
         match v:
-            case 'W': r = -25
+            case 'W': r = -2
             case '0': r = -0.1
             case 'R': r = -1
-            case 'S': r = -25
+            case 'S': r = -2
             case 'G': r = 1
             case _: r = 0
         return r

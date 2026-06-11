@@ -3,7 +3,7 @@ from q import Q
 from game_state import GameState
 from param import Parameters
 from snake import Snake
-from utils import directions, X, Y
+from utils import directions, X, Y, directions_names
 from map import Map, NUMBER_OF_GREEN_APPLE, NUMBER_OF_RED_APPLE, RED_APPLE, GREEN_APPLE
 from typing import Optional
 import numpy as np
@@ -42,9 +42,22 @@ class Simulation:
         st = game_state.map_.get_direction(direction, game_state.snake_.head_)
         return st
 
+    def update_table_with_new_state(self, game_state, r, chosen_st, prediction_at):
+        new_st = []
+        new_qt = []
 
-    def simulate(self, game_state: GameState):
-        game_state.map_.print_snakes_vision(game_state.snake_.head_)
+        for k in range(len(directions)):
+            new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_))
+            if (new_st[k] not in self.q.q_table_):
+                self.q.create_state(new_st[k])
+            # Appending max Q value of new state
+            new_qt.append(self.q.get_qt_max(new_st[k]))
+        new_at = np.argmax(new_qt)
+        
+        # Updating the q value of the previous state based on new state
+        self.q.update(r, chosen_st, prediction_at, new_st[new_at])
+
+    def get_states_values_actions_all_direction(self, game_state):
         st = []
         at_in_fut = []
         qt = [] 
@@ -57,38 +70,28 @@ class Simulation:
             if (fut_st not in self.q.q_table_):
                 self.q.create_state(fut_st)
                 eps = 1
-            if fut_st in st:
+            indices = [i for i, state in enumerate(st) if state == fut_st]
+            for prev_idx in indices:  
                 # If states exists more than once in current position than generate random
                 eps = 1
-                prev_idx = st.index(fut_st)
                 at_in_fut[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
             # expected value
             at_in_fut.append(self.q.generate_action(fut_st, eps))
-            qt.append(self.q.q_table_[fut_st][at_in_fut[i]])
+            qt.append(self.q.get_qt_max(fut_st))
+        return st, qt, at_in_fut
 
-        # Selecting the best
+
+    def simulate(self, game_state: GameState):
+        game_state.map_.print_snakes_vision(game_state.snake_.head_)
+        st, qt, at_in_fut = self.get_states_values_actions_all_direction(game_state)
+        # Selecting the action based on q value
         at = np.argmax(qt)
         new_coord = game_state.snake_.project_head(directions[at])
         item = game_state.map_.grid_[new_coord]
 
-        game_state.game_iteration(at, item)
-
-        new_st = []
-        new_qt = []
-
-        for k in range(len(directions)):
-            new_st.append(game_state.map_.get_direction(directions[k], game_state.snake_.head_))
-            if (new_st[k] not in self.q.q_table_):
-                self.q.create_state(new_st[k])
-            # Appending max Q value of new state
-            new_qt.append(self.q.get_qt_max(new_st[k]))
-
-        new_at = np.argmax(new_qt)
-        r = self.q.evaluate_item(item)
-        # Updating the q value of the previous state based on new state
-        self.q.update(r, st[at], at_in_fut[at], new_st[new_at])
-
+        game_state.game_iteration(at, game_state.map_.grid_[new_coord])
+        self.update_table_with_new_state(game_state, self.q.evaluate_item(item), st[at], at_in_fut[at])
 
         self.display_.draw_grid(game_state.map_.grid_)
         snake_len = len(game_state.snake_.snake_coords_)
