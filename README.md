@@ -11,8 +11,6 @@ Here are the rules:
 
 TODO :
 
-- Verify saving the model
-- Verify loading the model
 - Add time count
 - Save stats in model
 - place snake randomly

@@ -100,12 +100,13 @@ class Simulation:
         game_state.map_.print_snakes_vision(game_state.snake_.head_)
         st, qt, at_in_fut = (
             self.get_states_values_actions_all_direction(game_state))
-        # Selecting the action based on q value
+        # Selecting the action based on best q value
         at = np.argmax(qt)
         new_coord = game_state.snake_.project_head(ut.directions[at])
         item = game_state.map_.grid_[new_coord]
 
         game_state.game_iteration(at, game_state.map_.grid_[new_coord])
+
         self.update_table_with_new_state(
             game_state,
             self.q.evaluate_item(item),
@@ -155,5 +156,5 @@ class Simulation:
     def save_model(self):
         if self.param.destination_file_ is None:
             sys.exit(0)
-        np.save(self.param.destination_file_, self.q.q_table_)
+        np.save("models/" + self.param.destination_file_, self.q.q_table_)
         sys.exit(0)
