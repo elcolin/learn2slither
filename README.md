@@ -1,4 +1,4 @@
-# Q-Learning in Snake
+# Q-Learning with Snake
 
 ![Stat Example](doc/performance.png)
 
