@@ -5,9 +5,28 @@
 This project explores reinforcement learning through the **Q-learning function**.  
 Here are the rules:
 
-- The game mimics a snake, the snakes needs to reach a size of 10 in order to win the game.  
+- The game mimics a snake, the snakes needs to reach a size of 10 in order to win the game.
+- The snake spawns randomly on the board
 - To grow the snake needs to eat green apples, red apples make him smaller.  
 - If the snake reaches a null length, goes into a wall, eats himself, he dies.
+
+## Use
+```bash
+➜  src git:(main) python3 main.py --help                               
+usage: main.py [-h] [--no-display] [--src SRC] [--dst DST] [--timer TIMER]
+               [--sessions SESSIONS] [--map-size MAP_SIZE] [--no-learn] [--walls]
+
+options:
+  -h, --help           show this help message and exit
+  --no-display         Disable display
+  --src SRC            Use source model (npy)
+  --dst DST            Stores destination file model (npy)
+  --timer TIMER        Time between each loop in milliseconds
+  --sessions SESSIONS  Number of training sessions
+  --map-size MAP_SIZE  Number of cells on the map
+  --no-learn           No q values updated
+  --walls              Spawns random walls
+```
 
 ## Model
 
