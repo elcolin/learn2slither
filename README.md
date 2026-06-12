@@ -2,6 +2,8 @@
 
 ![Stat Example](doc/performance.png)
 
+![Best Length](doc/best_length.png)
+
 This project explores reinforcement learning through the **Q-learning function**.  
 Here are the rules:
 
