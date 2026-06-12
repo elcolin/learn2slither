@@ -14,7 +14,7 @@ Here are the rules:
 ![Snake Diagram](doc/snake_state.jpg)
 
 The model will **estimate what will be the best future action in a given state** and sometimes will be choosed randomly.  
-Howewer, **whether it is true or not, it will influence the q value of the state**. This allows to introduce a random factor without it being destructive (ie go into a wall).
+Howewer, **whether it is true or not, it will influence the q value of that specific choice**. This allows to introduce a random factor without it being destructive (ie go into a wall).
 
 TODO :
 
