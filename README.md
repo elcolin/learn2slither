@@ -10,7 +10,38 @@ Here are the rules:
 - To grow the snake needs to eat green apples, red apples make him smaller.  
 - If the snake reaches a null length, goes into a wall, eats himself, he dies.
 
+## Tree
+
+├── doc
+│   ├── performance.png
+│   └── snake_state.jpg
+├── README.md
+├── requirements
+│   ├── install_fedora.sh
+│   ├── install_macos.sh
+│   └── requirements.txt
+└── src
+    ├── display.py
+    ├── game_state.py
+    ├── main.py
+    ├── map.py
+    ├── models/
+    │
+    ├── param.py
+    ├── q.py
+    ├── simulation.py
+    ├── snake.py
+    └── utils.py
+    
+## Installation
+
+the script directory holds an **install_fedora.sh** whom installs tkinter and flake8 in a toolbox (podman) container.
+```bash
+sh install_fedora.sh
+```
+
 ## Use
+
 ```bash
 ➜  src git:(main) python3 main.py --help                               
 usage: main.py [-h] [--no-display] [--src SRC] [--dst DST] [--timer TIMER]
