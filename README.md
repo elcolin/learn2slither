@@ -1,6 +1,6 @@
 # Q-Learning in Snake
 
-![Stat Example](performance.png)
+![Stat Example](doc/performance.png)
 
 This project explores reinforcement learning through the **Q-learning function**.  
 Here are the rules:
@@ -9,7 +9,7 @@ Here are the rules:
 - To grow the snake needs to eat green apples, red apples make him smaller.  
 - If the snake reaches a null length, goes into a wall, eats himself, he dies.
 
-![Snake Diagram](snake_state.jpg)
+![Snake Diagram](doc/snake_state.jpg)
 
 TODO :
 
