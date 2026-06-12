@@ -39,6 +39,10 @@ class Parameters:
             action="store_true"
         )
         parser.add_argument(
+            "--walls",
+            action="store_true"
+        )
+        parser.add_argument(
             "--no-random",
             action="store_false"
         )
@@ -46,6 +50,7 @@ class Parameters:
         self.map_size_ = MAP_SIZE
         if args.map_size is not None:
             self.map_size_ = args.map_size  # add map size argument
+        self.walls_ = args.walls
         self.display_ = args.no_display
         self.timer_ms_ = TIMER_MS
         if (args.timer is not None):

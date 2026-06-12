@@ -7,16 +7,15 @@ import random
 
 
 class Map:
-    def __init__(self, size: int):
+    def __init__(self, size: int, walls: bool = False):
         self.map_size_: int = size
         self.grid_: str = np.full((size, size), ut.EMPTY)
         self.green_apples_coords_: list[tuple[int]] = []
         self.red_apples_coords_: list[tuple[int]] = []
         self.generate_mandatory_walls()
-        # self.generate_random_int_walls(MAP_SIZE)
+        if (walls):
+            self.generate_random_int_walls(int(self.map_size_ / 2))
         self.copy_grid_ = copy.deepcopy(self.grid_)
-        # self.generate_apples(NUMBER_OF_GREEN_APPLE, GREEN_APPLE)
-        # self.generate_apples(NUMBER_OF_RED_APPLE, RED_APPLE)
 
     def is_empty_space(self, coord: tuple[int]) -> bool:
         if (self.grid_[coord] == ut.EMPTY):

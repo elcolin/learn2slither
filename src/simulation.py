@@ -12,7 +12,6 @@ import sys
 class Simulation:
     def __init__(
             self,
-            initial_game_state: GameState,
             display: DisplayGame,
             param: Parameters):
         self.param = param
@@ -36,7 +35,7 @@ class Simulation:
             self.exit()
         self.sessions_idx_ += 1
         game_state = GameState(
-            Snake([(1, 1), (1, 2), (1, 3)]), Map(self.param.map_size_))
+            Snake([(1, 1), (1, 2), (1, 3)]), Map(self.param.map_size_, self.param.walls_))
         game_state.map_.generate_apples(
             ut.NUMBER_OF_GREEN_APPLE,
             ut.GREEN_APPLE)
