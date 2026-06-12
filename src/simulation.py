@@ -164,5 +164,5 @@ class Simulation:
     def save_model(self):
         if self.param.destination_file_ is None:
             sys.exit(0)
-        np.save("models/" + self.param.destination_file_, self.q.q_table_)
+        np.save("../models/" + self.param.destination_file_, self.q.q_table_)
         sys.exit(0)
