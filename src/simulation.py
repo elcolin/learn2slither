@@ -96,7 +96,7 @@ class Simulation:
                 at_in_fut[prev_idx] = self.q.generate_action(st[prev_idx], eps)
             st.append(fut_st)
             at_in_fut.append(self.q.generate_action(fut_st, eps))
-            qt.append(self.q.get_qt_max(fut_st))
+            qt.append(self.q.q_table_[fut_st][at_in_fut[i]])
         return st, qt, at_in_fut
 
     def simulate(self, game_state: GameState):

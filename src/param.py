@@ -63,7 +63,7 @@ class Parameters:
             self.sessions_ = args.sessions
         if (args.src is not None):
             try:
-                self.q_table_ = np.load(args.src, allow_pickle=True).item()
+                self.q_table_ = np.load("models/" + args.src, allow_pickle=True).item()
             except BaseException:
                 print(
                     "Loading q table failed,\
