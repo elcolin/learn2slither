@@ -14,26 +14,31 @@ Here are the rules:
 
 ## Tree
 
-    ├── doc
-    │   ├── performance.png
-    │   └── snake_state.jpg
-    ├── README.md
-    ├── requirements
-    │   ├── install_fedora.sh
-    │   ├── install_macos.sh
-    │   └── requirements.txt
-    └── src
-        ├── display.py
-        ├── game_state.py
-        ├── main.py
-        ├── map.py
-        ├── models/
-        │
-        ├── param.py
-        ├── q.py
-        ├── simulation.py
-        ├── snake.py
-        └── utils.py
+```bash
+├── doc
+│   ├── best_length.png
+│   ├── performance.png
+│   └── snake_state.jpg
+├── models
+│   ├── 100.npy
+│   ├── 10.npy
+│   └── 1.npy
+├── README.md
+├── requirements
+│   ├── install_fedora.sh
+│   ├── install_macos.sh
+│   └── requirements.txt
+└── src
+    ├── display.py
+    ├── game_state.py
+    ├── main.py
+    ├── map.py
+    ├── param.py
+    ├── q.py
+    ├── simulation.py
+    ├── snake.py
+    └── utils.py
+```
     
 ## Installation
 
