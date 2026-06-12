@@ -9,10 +9,12 @@ Here are the rules:
 - To grow the snake needs to eat green apples, red apples make him smaller.  
 - If the snake reaches a null length, goes into a wall, eats himself, he dies.
 
+## Model
+
 ![Snake Diagram](doc/snake_state.jpg)
+
+The model will estimate what will be the best future action in a given (state) and sometimes will be choosed randomly. Howewer, whether it is true or not, it will influence the q value of the state. This allows to introduce a random factor without it being destructive (ie go into a wall).
 
 TODO :
 
 - Add time count
-- Save stats in model
-- place snake randomly
