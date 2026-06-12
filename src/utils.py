@@ -23,7 +23,6 @@ opposite_directions: list[tuple[int, int]] = [DOWN, LEFT, UP, RIGHT]
 direction_names = ["UP", "RIGHT", "DOWN", "LEFT"]
 opposite_direction_names = ["DOWN", "LEFT", "UP", "RIGHT"]
 
-
 # COORDS
 X = 1
 Y = 0

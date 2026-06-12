@@ -40,6 +40,25 @@ class Map:
         if (new_x < 0 or new_x > len(self.grid_[0]) - 1):
             return None
         return (new_y, new_x)
+    import random
+
+    def spawn_snake(self, length=3):
+        while True:
+            x = random.randint(2, self.map_size_ - 2)
+            y = random.randint(2, self.map_size_ - 2)
+            dx, dy = random.choice(ut.directions)
+            snake = []
+            for i in range(length):
+                nx = x - i * dx
+                ny = y - i * dy
+                snake.append((nx, ny))
+
+            # 4. check validity (inside map)
+            if all(0 <= nx < self.map_size_
+                   and 0 <= ny < self.map_size_
+                   and self.is_empty_space((ny, nx))
+                   for nx, ny in snake):
+                return snake
 
     def get_snakes_vision(self, head_coords: tuple[int, int]):
         key: str = []

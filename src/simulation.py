@@ -2,7 +2,6 @@ from display import DisplayGame
 from q import Q
 from game_state import GameState
 from param import Parameters
-from snake import Snake
 import utils as ut
 from map import Map
 import numpy as np
@@ -35,7 +34,6 @@ class Simulation:
             self.exit()
         self.sessions_idx_ += 1
         game_state = GameState(
-            Snake([(1, 1), (1, 2), (1, 3)]),
             Map(
                 self.param.map_size_,
                 self.param.walls_))
@@ -105,6 +103,7 @@ class Simulation:
         """
             The function that runs a course of movement and updates the game
         """
+
         game_state.map_.print_snakes_vision(game_state.snake_.head_)
         st, qt, at_in_fut = (
             self.get_states_values_actions_all_direction(game_state))

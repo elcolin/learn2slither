@@ -4,10 +4,10 @@ from map import Map
 
 
 class GameState:
-    def __init__(self, snake: Snake, map: Map):
+    def __init__(self, map: Map):
         self.map_ = map
-        self.snake_ = snake
-        self.map_.update_snake_position(snake)
+        self.snake_ = Snake(self.map_.spawn_snake())
+        self.map_.update_snake_position(self.snake_)
         self.snake_status_: int = SNAKE_IS_ALIVE
 
     def is_snake_alive(self) -> bool:
