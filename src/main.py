@@ -1,5 +1,3 @@
-from snake import Snake
-from map import Map
 from display import DisplayGame
 import signal
 from simulation import Simulation

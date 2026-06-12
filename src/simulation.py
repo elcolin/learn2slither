@@ -35,7 +35,10 @@ class Simulation:
             self.exit()
         self.sessions_idx_ += 1
         game_state = GameState(
-            Snake([(1, 1), (1, 2), (1, 3)]), Map(self.param.map_size_, self.param.walls_))
+            Snake([(1, 1), (1, 2), (1, 3)]),
+            Map(
+                self.param.map_size_,
+                self.param.walls_))
         game_state.map_.generate_apples(
             ut.NUMBER_OF_GREEN_APPLE,
             ut.GREEN_APPLE)
@@ -58,10 +61,7 @@ class Simulation:
         new_qt = []
 
         for k in range(len(ut.directions)):
-            new_st.append(
-                game_state.map_.get_direction(
-                    ut.directions[k],
-                    game_state.snake_.head_))
+            new_st.append(self.get_state(game_state, ut.directions[k]))
             if (new_st[k] not in self.q.q_table_):
                 self.q.create_state(new_st[k])
             # Appending max Q value of new state
@@ -81,8 +81,10 @@ class Simulation:
         qt = []
 
         for i in range(len(ut.directions)):
-            # "random rate": chooses potential q value at random 10 percent of the time
-            # 100 when state doesn't exist, or state exists in multiple directions
+            # "random rate": chooses potential q value at
+            # random 10 percent of the time or
+            # 100 when state doesn't exist,
+            # or state exists in multiple directions
             eps = 0.1
             # Getting state in direction
             fut_st = self.get_state(game_state, ut.directions[i])

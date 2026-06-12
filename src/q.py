@@ -2,7 +2,9 @@ import numpy as np
 import random
 from utils import MAP_SIZE
 
+
 class Q:
+
     """
         Class used to generate a Q Table
             States are keys following the given format:
@@ -76,7 +78,7 @@ class Q:
             self.empt_ = 0
         match v:
             case 'W': r = -2
-            case '0': 
+            case '0':
                 r = max(-0.5, (-0.1 / MAP_SIZE) * self.empt_)
                 self.empt_ = self.empt_ + 1
             case 'R': r = -1
