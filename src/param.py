@@ -12,39 +12,42 @@ class Parameters:
         parser.add_argument(
             "--no-display",   # nom de l'argument
             action="store_false",
-            help="Desactiver l'affichage"
+            help="Disable display"
         )
         parser.add_argument(
             "--src",
-            type=str
+            type=str,
+            help="Use source model (npy)"
         )
         parser.add_argument(
             "--dst",
-            type=str
+            type=str,
+            help="Stores destination file model (npy)"
         )
         parser.add_argument(
             "--timer",
-            type=int
+            type=int,
+            help="Time between each loop in milliseconds"
         )
         parser.add_argument(
             "--sessions",
-            type=int
+            type=int,
+            help="Number of training sessions"
         )
         parser.add_argument(
             "--map-size",
-            type=int
+            type=int,
+            help="Number of cells on the map"
         )
         parser.add_argument(
             "--no-learn",
-            action="store_true"
+            action="store_true",
+            help="No q values updated"
         )
         parser.add_argument(
             "--walls",
-            action="store_true"
-        )
-        parser.add_argument(
-            "--no-random",
-            action="store_false"
+            action="store_true",
+            help="Spawns random walls"
         )
         args = parser.parse_args()
         self.map_size_ = MAP_SIZE
